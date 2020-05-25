@@ -119,6 +119,7 @@ if tornado == 0:
       indexy = i
       sens_var[i] = -1              
       break
+
   length_x = len(x)
   length_y = len(y)
   z = np.zeros(length_y, length_x)
@@ -132,22 +133,22 @@ if tornado == 0:
   # to be compared every time
 
   a = 1 # indexes
-  for i in x:
+  for i in x: #THIS MIGHT BE WRONG (CHECK WITH A TEST RUN)
     b = 1# % indexes
-    for j in y:
+    for j in y: #THIS MIGHT BE WRONG (CHECK WITH A TEST RUN)
       inputs = sens_var # inputs = cell2mat(sens_var) # 
       inputs[indexx] = i # % update the proper input with the next value
       inputs[indexy]= j # % update the proper input with the next value
       [cost, _, _, _, _, _, _, _, _, _, _, _, _, _, _] = cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, 
       Sell_SCM, Sell_Iron, Sell_Alumina, Sell_Aggregate, cleanH, cleanE, 
-      inputs[1], inputs[2], inputs[3], inputs[4], inputs[5], 
+      inputs[0], inputs[1], inputs[2], inputs[3], inputs[4], inputs[5], 
       inputs[6], inputs[7], inputs[8], inputs[9], inputs[10], 
       inputs[11], inputs[12], inputs[13], inputs[14], inputs[15], 
       inputs[16], inputs[17], inputs[18], inputs[19], 
       inputs[20], inputs[21], inputs[22], inputs[23], inputs[24], 
       inputs[25], inputs[26], inputs[27], inputs[28], inputs[29], 
       inputs[30], inputs[31], inputs[32], inputs[33], inputs[34], 
-      inputs[35], inputs[36])#
+      inputs[35])#
 #------------------------------
 # CHECK CONVERSION: GO OVER THIS CODE SNIPPET WITH CODY
       z[b, a] = cost #z(b, a) = cost # the cost H2 array
@@ -169,15 +170,15 @@ if tornado == 0:
   [cost, SCM_value, H2_value, CapExPT, OpExPT, Iron, QDry, QBrim, QH2, 
   CapExMat, GHG, OpExMat, Al, Agg, GHG_Div] = cem_plant(SMR, CC, chemical, Dry,
   echem, retro, burnH2, Sell_SCM, Sell_Iron, Sell_Alumina, Sell_Aggregate, cleanH,
-  cleanE, constants(1), constants(2), constants(3), constants(4), 
-  constants(5), constants(6), constants(7), constants(8), 
-  constants(9), constants(10), constants(11), constants(12), 
-  constants(13), constants(14), constants(15), constants(16), 
-  constants(17), constants(18), constants(19), constants(20), 
-  constants(21), constants(22), constants(23), constants(24), 
-  constants(25), constants(26), constants(27), constants(28), 
-  constants(29), constants(30), constants(31), constants(32), 
-  constants(33), constants(34), constants(35), constants(36))
+  cleanE, constants[0], constants[1], constants[2], constants[3], constants[4], 
+  constants[5], constants[6], constants[7], constants[8], 
+  constants[9], constants[10], constants[11], constants[12], 
+  constants[13], constants[14], constants[15], constants[16], 
+  constants[17], constants[18], constants[19], constants[20], 
+  constants[21], constants[22], constants[23], constants[24], 
+  constants[25], constants[26], constants[27], constants[28], 
+  constants[29], constants[30], constants[31], constants[32], 
+  constants[33], constants[34], constants[35])
 
 # find Dry Case
 # update the proper input with the next value
@@ -187,17 +188,15 @@ if tornado == 0:
   [Dry_base, _, _, DryCapExPT, _, _, DryQDry, _, _, DryCapExMat, DryGHG, 
   DryOpExMat, _, _, _] = cem_plant(0, 0, chemical, 1, echem, retro, 0, 
   Sell_SCM, Sell_Iron, Sell_Alumina, Sell_Aggregate, cleanH, cleanE, 
-  constants(1), constants(2), constants(3), constants(4), 
-  constants(5), constants(6), constants(7), constants(8), 
-  constants(9), constants(10), constants(11), constants(12), 
-  constants(13), constants(14), constants(15), constants(16), 
-  constants(17), constants(18), constants(19), constants(20), 
-  constants(21), constants(22), constants(23), constants(24), 
-  constants(25), constants(26), constants(27), constants(28), 
-  constants(29), constants(30), constants(31), constants(32), 
-  constants(33), constants(34), constants(35), constants(36))#
+  constants[0], constants[1], constants[2], constants[3],
+  constants[4], constants[5], constants[6], constants[7],
+  constants[8], constants[9], constants[10], constants[11], 
+  constants[12], constants[13], constants[14], constants[15], 
+  constants[16], constants[17], constants[18], constants[19], constants[20],
+  constants[21], constants[22], constants[23], constants[24], constants[25], 
+  constants[26], constants[27], constants[28], constants[29], constants[30], constants[31], constants[32], constants[33], constants[34], constants[35])
 
-  zlabel = 'Levelized Cost of Cement/T'
+zlabel = 'Levelized Cost of Cement/T'
   # log the cost if necessary, unless there are negative values
   if log_plot == 1 and (sum(sum(abs(z))) <= sum(sum(z))):
     z = math.log(z)#
