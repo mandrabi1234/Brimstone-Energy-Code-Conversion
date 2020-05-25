@@ -196,7 +196,7 @@ if tornado == 0:
   constants[21], constants[22], constants[23], constants[24], constants[25], 
   constants[26], constants[27], constants[28], constants[29], constants[30], constants[31], constants[32], constants[33], constants[34], constants[35])
 
-zlabel = 'Levelized Cost of Cement/T'
+  zlabel = 'Levelized Cost of Cement/T'
   # log the cost if necessary, unless there are negative values
   if log_plot == 1 and (sum(sum(abs(z))) <= sum(sum(z))):
     z = math.log(z)#
@@ -361,11 +361,11 @@ zlabel = 'Levelized Cost of Cement/T'
         ylabel({'TCO_2/T OPC produced'})
         set(gca, 'XTickLabel', key, 'Fontsize', 22, 'XTickLabelRotation', 45)#
 
-  else
+else:
   t_data = cell(1, length(constants))#
-  for i = 1:length(constants)
-  costs = [0, 0]#
-  inputs = constants#
+  for i in range(len(constants):
+    costs = [0, 0]#
+    inputs = constants#
   inputs(i) = min(sens_var
   {i})#
   [costs(1), ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~, ~] = ...
