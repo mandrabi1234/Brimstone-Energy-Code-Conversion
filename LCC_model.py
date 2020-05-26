@@ -1,11 +1,15 @@
-import numpy as np
 import math
+
+
+
 import pandas as pd
 import matplotlib as mpl
-from define_cem_sens_anal import define_cem_sens_anal 
+import numpy as np
 from cem_plant import cem_plant
-from volt import volt
+from define_cem_sens_anal import define_cem_sens_anal
 from replace import replace
+from volt import volt
+
 # check for OpEx
 # do a tornado plot
 
@@ -367,7 +371,7 @@ else:
   for i in range(len(constants):
     costs = [0, 0]#
     inputs = constants#
-    inputs[i] = minimum(sens_var[i])#
+    inputs[i] = minimum(sens_var[i])
   [costs[1], _, _, _, _, _, _, _, _, _, _, _, _, _, _] = 
   cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, 
   Sell_SCM, Sell_Iron, Sell_Alumina, Sell_Aggregate, cleanH, 
@@ -378,7 +382,7 @@ else:
   inputs[20], inputs[21], inputs[22], inputs[23], inputs[24], 
   inputs[25], inputs[26], inputs[27], inputs[28], inputs[29], 
   inputs[30], inputs[31], inputs[32], inputs[33], inputs[34], 
-  inputs[35])#
+  inputs[35])
 
   inputs[i] = maximum(sens_var[i])#
   [costs[2], _, _, _, _, _, _, _, _, _, _, _, _, _, _] = 
@@ -393,6 +397,8 @@ else:
   inputs[30], inputs[31], inputs[32], inputs[33], inputs[34], 
   inputs[35])#
   t_data[i] = [costs]#
+
+
   end
   % Names
   of
@@ -401,50 +407,46 @@ else:
   axis
   ticks
   
-  names = ['Electrolyzer Cost (USD/kW) 50->1000', 'CO_2 Tax (USD/T CO_2) -190->100', 
-  'H_2 price (USD/kg)1->4', 'Mining Cost (USD/T) 3->10', 'Cost of Heat (USD/GJ) 1->10', 
-  'SCM Sold Per T OPC (T SCM/T OPC) 0.4->5.3', 'Electricity Cost ($/kWhr) 0.01->0.1', 
-  'kWhr per kg H_2 5->30', 'IRR 4%->30%', 'CO_2 Intensity of Heat (T CO_2/GJ) 0->0.2', 
-  'CO_2 Intensity of Electricity (T CO_2/kWhr) 0->0.001', 'Price per T of SCM (USD/T) 0->100', 
-  'Sulfur Cost (USD/T) 0->200', 'Plant Size (T OPC/yr) 1M->5M', 'Co-product Revenue per T OPC 0->500', 
-  'Price per Tonne Fe_2O_3 0->100', 'Price per Tonne Al_2O_3 0->400', 
-  'Price per Tonne Aggregate 0->20', 'Operating Cell Voltage (V) 0.2->1.2', 
-  'Water Content (T/T OPC) 0.1-5', 'Improvement in Current Density (A/cm^2) 0.4-> -0.4', 
-  'Al production efficiency 50%->100%', 'Fe production efficiency 50%->100%', 
-  'SCM production efficiency 50%->100%', 'OPC production efficiency 50%->90%', 
-  'Aggregate production efficiency 50%->100%', 'CapEx multiplier 0.5->2']#
+names = np.array['Electrolyzer Cost (USD/kW) 50->1000', 'CO_2 Tax (USD/T CO_2) -190->100', 
+'H_2 price (USD/kg)1->4', 'Mining Cost (USD/T) 3->10', 'Cost of Heat (USD/GJ) 1->10', 
+'SCM Sold Per T OPC (T SCM/T OPC) 0.4->5.3', 'Electricity Cost ($/kWhr) 0.01->0.1', 
+'kWhr per kg H_2 5->30', 'IRR 4%->30%', 'CO_2 Intensity of Heat (T CO_2/GJ) 0->0.2', 
+'CO_2 Intensity of Electricity (T CO_2/kWhr) 0->0.001', 'Price per T of SCM (USD/T) 0->100', 
+'Sulfur Cost (USD/T) 0->200', 'Plant Size (T OPC/yr) 1M->5M', 'Co-product Revenue per T OPC 0->500', 
+'Price per Tonne Fe_2O_3 0->100', 'Price per Tonne Al_2O_3 0->400', 'Price per Tonne Aggregate 0->20', 
+'Operating Cell Voltage (V) 0.2->1.2', 'Water Content (T/T OPC) 0.1-5', 'Improvement in Current Density (A/cm^2) 0.4-> -0.4', 
+'Al production efficiency 50%->100%', 'Fe production efficiency 50%->100%', 'SCM production efficiency 50%->100%', 
+'OPC production efficiency 50%->90%', 'Aggregate production efficiency 50%->100%', 'CapEx multiplier 0.5->2']
 
-  % ' Fraction CaO in Source Rock', ...
-    % ' Fraction Al_2O_3 in Source Rock', ' Fraction SiO_2 in Source Rock', ...
-    % ' Fraction FeO in Source Rock', 'Freaction Fe_2O_3 in Source Rock', ...
-    % 'Fraction MgO, in Source Rock',
-  % 'Capacity Factor',
-  % 'Conventration of Produced Sulfuric Acid', ...
-    % 'Heat to Power Efficiency',
+# ' Fraction CaO in Source Rock', ...
+# ' Fraction Al_2O_3 in Source Rock', ' Fraction SiO_2 in Source Rock', ...
+# ' Fraction FeO in Source Rock', 'Freaction Fe_2O_3 in Source Rock', ...
+# 'Fraction MgO, in Source Rock',
+# 'Capacity Factor',
+# 'Conventration of Produced Sulfuric Acid', ...
+# 'Heat to Power Efficiency',
 
-    vars = [1:9, 16: 19, 21, 24: length(t_data)]#
-  a = 1#
-  high = zeros(size(vars))#
-  low = zeros(size(vars))#
-  for i = vars
-  n = t_data
-  {i}#
-  high(a) = max(n)#
-  low(a) = min(n)#
+vars = [1:9, 16: 19, 21, 24: len(t_data)]#
+a = 1#
+high = np.zeros(shape(vars))#
+low = np.zeros(shape(vars))#
+for i in vars: 
+  n = t_data[i]#
+  high(a) = maximum(n)#
+  low(a) = minimum(n)#
   a = a + 1#
-  end
-  [base, _, _, _, _, _, _, _, _, _, _, _, _, _, _] = 
-  cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, 
-  Sell_SCM, Sell_Iron, Sell_Alumina, Sell_Aggregate, cleanH,
-  cleanE, constants[0], constants[1], constants[2], constants[3],
-  constants[4], constants[5], constants[6], constants[7], constants[8],
-  constants[9], constants[10], constants[11], constants[12], 
-  constants[13], constants[14], constants[15], constants[16], 
-  constants[17], constants[18], constants[19], constants[20], 
-  constants[21], constants[22], constants[23], constants[24], 
-  constants[25], constants[26], constants[27], constants[28], 
-  constants[29], constants[30], constants[31], constants[32], 
-  constants[33], constants[34], constants[35])#
+[base, _, _, _, _, _, _, _, _, _, _, _, _, _, _] = 
+cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, 
+Sell_SCM, Sell_Iron, Sell_Alumina, Sell_Aggregate, cleanH,
+cleanE, constants[0], constants[1], constants[2], constants[3],
+constants[4], constants[5], constants[6], constants[7], constants[8],
+constants[9], constants[10], constants[11], constants[12], 
+constants[13], constants[14], constants[15], constants[16], 
+constants[17], constants[18], constants[19], constants[20], 
+constants[21], constants[22], constants[23], constants[24], 
+constants[25], constants[26], constants[27], constants[28], 
+constants[29], constants[30], constants[31], constants[32],
+constants[33], constants[34], constants[35])#
 
   figure
 
