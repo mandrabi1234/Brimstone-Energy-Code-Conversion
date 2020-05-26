@@ -399,14 +399,7 @@ else:
   t_data[i] = [costs]#
 
 
-  end
-  % Names
-  of
-  the
-  Y
-  axis
-  ticks
-  
+ # Names of the Y-axis ticks 
 names = np.array['Electrolyzer Cost (USD/kW) 50->1000', 'CO_2 Tax (USD/T CO_2) -190->100', 
 'H_2 price (USD/kg)1->4', 'Mining Cost (USD/T) 3->10', 'Cost of Heat (USD/GJ) 1->10', 
 'SCM Sold Per T OPC (T SCM/T OPC) 0.4->5.3', 'Electricity Cost ($/kWhr) 0.01->0.1', 
