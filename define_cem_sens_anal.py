@@ -91,9 +91,9 @@ def define_cems_sens_anal(switches, Skarn, Ave_basalt, tornado):
 
 ##############################################################################################
     # turn constants that are to be compared into zeros, and make the array a cell so it can have both doubles and arrays in the array
-    #CHECK: see if the num2cell function works
+
     input_a = np.array([constants*switches])
-    sensitiv_anal_vect = num2cell(input_a)
+    sensitiv_anal_vect = input_a
 
 #############################################################################################
     # CHECK: translation is correct
@@ -156,7 +156,7 @@ def define_cems_sens_anal(switches, Skarn, Ave_basalt, tornado):
     for i in range(len(sensitiv_anal_vect)):
         if np.array(sensitiv_anal_vect[i]) == 0:
     # add the standard values of the array to be compared to the end of the cell
-            sensitiv_anal_vect[len(sensitiv_anal_vect) + 1] = num2cell(constants[i])
+            sensitiv_anal_vect[len(sensitiv_anal_vect) + 1] = constants[i]
             sensitiv_anal_vect[i] = variables[i]
 
     if tornado == 1:
