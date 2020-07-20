@@ -164,10 +164,14 @@ if tornado == 0:
     b = 1 # % indexes
     for j in (y): #THIS MIGHT BE WRONG (CHECK WITH A TEST RUN)
       inputs = (sens_var) # inputs = cell2mat(sens_var) # 
+      print("SENS_VAR")
+      print(sens_var)
+      print("")
       print("INPUTS")
       print(inputs)
       print(inputs[0])
       print(inputs[3])
+      print("")
       inputs[indexx] = i # % update the proper input with the next value
       inputs[indexy]= j # % update the proper input with the next value
 
