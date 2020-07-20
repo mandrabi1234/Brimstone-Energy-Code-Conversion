@@ -1,6 +1,7 @@
 import numpy as np
 import math
 import pandas as pd
+
 def replace(a):
     for i in range(len(a)):
         if a[i] == 0:

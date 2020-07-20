@@ -17,7 +17,7 @@ from replace import replace
     array as the last two values in the cell
 '''
 
-def define_cems_sens_anal(switches, Skarn, Ave_basalt, tornado):
+def Def_anal(switches, Skarn, Ave_basalt, tornado):
 
     #   default current density of the electrolysers
     DPkW = 100
@@ -91,9 +91,10 @@ def define_cems_sens_anal(switches, Skarn, Ave_basalt, tornado):
 ##############################################################################################
     # turn constants that are to be compared into zeros, and make the array a cell so it can have both doubles and arrays in the array
 
-    input_a = np.array([constants*switches])
+    input_a = constants*switches
+    #print("INPUT_A", np.shape(input_a))
     sensitiv_anal_vect = input_a
-
+   # print(sensitiv_anal_vect)
 #############################################################################################
     # CHECK: translation is correct
     # Python Syntax: np.arange(start, stop, step)
@@ -143,21 +144,64 @@ def define_cems_sens_anal(switches, Skarn, Ave_basalt, tornado):
     Agg_eff = np.arange(0.5, 1.1, 0.1) # 0.5:0.1: 1;
     CapEx_Fac = np.arange(0.5, 2.1, 0.1) # 0.5:0.1: 2;
 
-    variables = np.array(DPkW, CO2_Tax, CH, mineCost, heatCost, maxSCM, eCost, kWhr_kg, r, CaO_Frac_Rock,
+    variables = np.array([DPkW, CO2_Tax, CH, mineCost, heatCost, maxSCM, eCost, kWhr_kg, r, CaO_Frac_Rock,
                          Al2O3_Frac_Rock, SiO2_Frac_Rock, FeO_Frac_Rock, Fe2O3_Frac_Rock, MgO_Frac_Rock,
                          CO2int, eCO2int, PPT_SCM, S_Cost, CF, TPY, SA_ratio, Eff, Rev, PPT_F, PPT_Al,
-                         PPT_Agg, V, W, CD, Al_eff, Fe_eff, SCM_eff, OPC_eff, Agg_eff, CapEx_Fac)
+                         PPT_Agg, V, W, CD, Al_eff, Fe_eff, SCM_eff, OPC_eff, Agg_eff, CapEx_Fac], dtype = object)
 
+    #--CHECK--#
+   # print("---VARIABLES---")
+   # print(np.shape(variables))
+    #print(variables)
+   # print("")
+   # print("--CONSTANTS--")
+   # print(np.shape(constants))
+   # print(constants)
+   # print('')
+   # print("---SENS_VAR---")
+    #print(type(sensitiv_anal_vect))
+    #print (sensitiv_anal_vect.round(4))
+   # print(sensitiv_anal_vect)
+   # print("---YOYOYOY")
+  #  sens1 = np.delete(sensitiv_anal_vect, np.where(sensitiv_anal_vect == 0))
+   # print("--SENS1--")
+   # print(sens1)
+   # sens2 = np.delete(sensitiv_anal_vect, np.where(sensitiv_anal_vect != 0))
+   # print("--SENS2--")
+   # print(sens2)
 
+  #  print("DIMENSIONS")
+   # print(np.shape(sensitiv_anal_vect))
+
+    
 ###################################################
 #CONVERSION CHECK: GO THROUGH THIS CODE AGAIN
-# put the arrays that are to be compared into the sensitive_anal)vec
+# put the arrays that are to be compared into the sensitive_anal_vec
     for i in range(len(sensitiv_anal_vect)):
-        if np.array(sensitiv_anal_vect[i]) == 0:
+     
+        if sensitiv_anal_vect[i] == 0:
+            #print("--HELLO--")
+
     # add the standard values of the array to be compared to the end of the cell
-            sensitiv_anal_vect[len(sensitiv_anal_vect) + 1] = constants[i]
+            sensitiv_anal_vect = np.append(sensitiv_anal_vect, constants[i])
+            #print("CHECK",sensitiv_anal_vect)
+           
+            sens_analysis = [[i] for i in sensitiv_anal_vect]
+            sensitiv_anal_vect = [i for i in sensitiv_anal_vect]
+           
+           
+            #print(sensitiv_anal_vect)
             sensitiv_anal_vect[i] = variables[i]
+            sens_analysis[i] = variables[i]
+            #print("HELLLOOOOOO", np.shape(sensitiv_anal_vect))
+            print("--Sensitivity Check--")
+            print(sensitiv_anal_vect)
+            print(sens_analysis)
+
+
 
     if tornado == 1:
         sensitiv_anal_vect = variables
+
+    return sensitiv_anal_vect, constants, sens_analysis
 ###################################################

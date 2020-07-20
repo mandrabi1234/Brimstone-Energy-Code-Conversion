@@ -1,12 +1,9 @@
 import math
-
-
-
 import pandas as pd
-import matplotlib as mpl
+import matplotlib.pyplot as plt
 import numpy as np
 from cem_plant import cem_plant
-from define_cem_sens_anal import define_cem_sens_anal
+from define_cem_sens_anal import Def_anal
 from replace import replace
 from volt import volt
 
@@ -48,6 +45,7 @@ eCost_switch = 1 # price to sell electricity
 kWhr_kg_switch = 0 # vary the cost of storing energy
 r_switch = 0 # vary the capacity factor of the plant
 
+#Thank you very much for all that you have done
 
 CaO_Frac_Rock_switch = 0 # fraction of CaO in the source rock
 Al2O3_Frac_Rock_switch = 0 # fraction of Al2O3 in the source rock
@@ -99,50 +97,88 @@ x = 0 #  variable to graph
 
 y = 0 # variable to graph
 
-indexx = -1#
-indexy = -1#
+indexx = -1
+indexy = -1
 
 # call the define_sens_anal function which returns a cell array of values
 # for each variable and constant, two variables are compared at a time
 # while everything is kept constant
-sens_var, constants = define_cem_sens_anal(switches, Skarn, Ave_basalt, tornado)
+sens_var, constants, SENS = Def_anal(switches, Skarn, Ave_basalt, tornado)
+#print("--6IX9INE--")
+#print(sens_var)
+#print(SENS)
+SENS[3] = sens_var[3]
+#print(len(SENS[3]))
+#sens_var = np.asarray(sens_var)
+#print(constants)
 
 # find the index of the variables to compare in the sens_var cell array
 # last 2 values are the constants that would be used if the variables
 # selected were not variables, and therefore can be ignored
 
 
+#sens_var = np.array(sens_var)
+#sens_var = sens_var.astype(int)
+#print(sens_var)
+
 if tornado == 0:
   for i in range(len(sens_var) - 2):
-    if ((indexx == -1) and (indexy == -1) and (len(math.ceil(sens_var[i])) > 1)):
+    #print("--STOOPID--")
+    #print(len(SENS[i]))
+    #print((len(math.ceil(sens_var[i]))))
+    #if ((indexx == -1) and (indexy == -1) and ((len(sens_var[i])) > 1)):
+    if ((indexx == -1) and (indexy == -1) and ((len(SENS[i])) > 1)):
       x = sens_var[i] # defines the variable
       indexx = 1      
       sens_var[i] = -1 # replaces variable with -1            
-    elif ((indexy == -1) and (len(math.ceil(sens_var[i])) > 1)):
+    elif ((indexy == -1) and ((len(SENS[i])) > 1)):
       y = sens_var[i]
       indexy = i
       sens_var[i] = -1              
       break
 
+  print('X',x)
+  print('Y', y)
   length_x = len(x)
   length_y = len(y)
-  z = np.zeros(length_y, length_x)
-  z_CO2 = np.zeros(length_y, length_x)
-  z_en = np.zeros(length_y, length_x)
-  zz = np.zeros(length_y, length_x) # number of components in system
-  w = np.zeros(length_x, 1)
-  v = np.zeros(length_y, 1)
-  q = np.zeros(length_x) 
+  print("Length Check")
+  print(length_x)
+  print(length_y)
+  z = np.zeros((length_y, length_x))
+  print("Z-length", z)
+  z_CO2 = np.zeros((length_y, length_x))
+  z_en = np.zeros((length_y, length_x))
+  zz = np.zeros((length_y, length_x)) # number of components in system
+  w = np.zeros((length_x, 1))
+  v = np.zeros((length_y, 1))
+  q = np.zeros((length_x))
+
+
+
   # run the plant code in a loop, updating the value of the variables (x and y) 
   # to be compared every time
-
+  
+  print("IndexX", indexx)
+  print("IndexY", indexy)
   a = 1 # indexes
-  for i in x: #THIS MIGHT BE WRONG (CHECK WITH A TEST RUN)
-    b = 1# % indexes
-    for j in y: #THIS MIGHT BE WRONG (CHECK WITH A TEST RUN)
-      inputs = sens_var # inputs = cell2mat(sens_var) # 
+  for i  in x: #THIS MIGHT BE WRONG (CHECK WITH A TEST RUN)
+    b = 1 # % indexes
+    for j in (y): #THIS MIGHT BE WRONG (CHECK WITH A TEST RUN)
+      inputs = (sens_var) # inputs = cell2mat(sens_var) # 
+      print(inputs[0])
+      print(inputs[3])
+      #inputs = np.array([0.0010, 0.0000, 0.0000, -0.0000, 0.0000, 0.0001, -0.0000, 0.0001, 0.0000, 
+      #0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0006, 0.0002, 0.0000, 9.7000, 0.0000, 0.0000, 
+      #-0.0000, 0.0009, 0.0030, 0.0001, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0001,0.0000])
+ #     print("Inputs", inputs)
       inputs[indexx] = i # % update the proper input with the next value
       inputs[indexy]= j # % update the proper input with the next value
+
+#DPkW, CO2_Tax, CH, mineCost, heatCost, maxSCM, eCost, kWhr_kg, r, CaO_Frac_Rock, Al2O3_Frac_Rock,
+#              SiO2_Frac_Rock, FeO_Frac_Rock, Fe2O3_Frac_Rock, MgO_Frac_Rock, CO2int, eCO2int, PPT_SCM, S_Cost, CF, TPY,
+#              SA_ratio, Eff, rev, PPT_F, PPT_Al, PPT_Agg, V, W, C_imp, Al_eff, Fe_eff, SCM_eff, OPC_eff, Agg_eff,
+#              CapEx_fac
+    
       [cost, _, _, _, _, _, _, _, _, _, _, _, _, _, _] = cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, 
       Sell_SCM, Sell_Iron, Sell_Alumina, Sell_Aggregate, cleanH, cleanE, 
       inputs[0], inputs[1], inputs[2], inputs[3], inputs[4], inputs[5], 
@@ -152,7 +188,7 @@ if tornado == 0:
       inputs[20], inputs[21], inputs[22], inputs[23], inputs[24], 
       inputs[25], inputs[26], inputs[27], inputs[28], inputs[29], 
       inputs[30], inputs[31], inputs[32], inputs[33], inputs[34], 
-      inputs[35])#
+      inputs[35])
 #------------------------------
 # CHECK CONVERSION: GO OVER THIS CODE SNIPPET WITH CODY
       z[b, a] = cost #z(b, a) = cost # the cost H2 array
@@ -168,9 +204,13 @@ if tornado == 0:
   
 # find Base Case
 # update the proper input with the next value
-  inputs[indexx] = sens_var[len(sens_var) - 1] # update the proper input with the next value
+  print("CONSTANTS", constants)
+
+  inputs[indexx] = sens_var[len(sens_var) - 2] # update the proper input with the next value
         
-  inputs[indexy] = sens_var[len(sens_var)] #
+  inputs[indexy] = sens_var[len(sens_var)-1]
+  print(inputs[indexy])
+  print(inputs[indexx]) #
   [cost, SCM_value, H2_value, CapExPT, OpExPT, Iron, QDry, QBrim, QH2, 
   CapExMat, GHG, OpExMat, Al, Agg, GHG_Div] = cem_plant(SMR, CC, chemical, Dry,
   echem, retro, burnH2, Sell_SCM, Sell_Iron, Sell_Alumina, Sell_Aggregate, cleanH,
@@ -187,8 +227,8 @@ if tornado == 0:
 # find Dry Case
 # update the proper input with the next value
 
-  inputs[indexx] = sens_var[len(sens_var) - 1] # update the proper input with the next value
-  inputs[indexy] = sens_var[len(sens_var)]
+  inputs[indexx] = sens_var[len(sens_var) - 2] # update the proper input with the next value
+  inputs[indexy] = sens_var[len(sens_var) - 1]
   [Dry_base, _, _, DryCapExPT, _, _, DryQDry, _, _, DryCapExMat, DryGHG, 
   DryOpExMat, _, _, _] = cem_plant(0, 0, chemical, 1, echem, retro, 0, 
   Sell_SCM, Sell_Iron, Sell_Alumina, Sell_Aggregate, cleanH, cleanE, 
@@ -209,163 +249,12 @@ if tornado == 0:
 #------------------------------------------------------------------------------------------------------------------------------------------
 #----------------------------------------------------------UNFINISHED CODE-----------------------------------------------------------------
 #------------------------------------------------------------------------------------------------------------------------------------------
+
+#cp = plt.contourf(x, y, z, 100)
+#plt.colorbar(cp)
+#plt.plot(cp)
+
 '''
-        figure(1)
-        % filled
-        contour
-        plot
-        of
-        co - variables
-        to
-        compare
-        the
-        costs
-        of
-        H2
-        contourf(x, y, z)
-        set(gca, 'Fontsize', 22)
-        hold
-        on
-        c = colorbar()#
-        labels = ...
-        {'Electrolyzer Cost (USD/kW)', 'CO_2 Tax (USD/T CO_2)'...
-        'H_2 price (USD/kg)', 'Mining Cost (USD/T)', ...
-        'Cost of Heat (USD/GJ)', 'SCM Sold Per T OPC (T SCM/T OPC)', ...
-        'Electricity Cost ($/kWhr)', 'kWhr per kg H_2', 'Discount Rate', ...
-        ' Fraction CaO in Source Rock', ' Fraction Al_2O_3 in Source Rock', ...
-        ' Fraction SiO_2 in Source Rock', ' Fraction FeO in Source Rock', ...
-        'Freaction Fe_2O_3 in Source Rock', 'Fraction Mg_O, in Source Rock', ...
-        'CO_2 Intensity of Heat (T CO_2/GJ)', ...
-        'CO_2 Intensity of Electricity (T CO_2/kWhr)', ...
-        'Price per T of SCM (USD/T)', 'Sulfur Cost (USD/T)', ...
-        'Capacity Factor', 'Plant Size (T OPC/yr)', ...
-        'Conventration of Produced Sulfuric Acid', ...
-        'Heat to Power Efficiency', 'Co-product Revenue per T OPC'...
-        'Price per Tonne Fe_2O_3', 'Price per Tonne Al_2_O_3', ...
-        'Price per Tonne Aggregate', 'Operating Cell Voltage (V)', ...
-        'Water Content (T/T OPC)', ...
-        'Improvement in Current Density (A/cm^2)', ...
-        'Al production efficiency', 'Fe production efficiency', ...
-        'SCM production efficiency', 'OPC production efficiency', ...
-        'Aggregate production efficiency'}#
-        xlabel(labels
-        {indexx})#
-        ylabel(labels
-        {indexy})#
-        c.Label.String = zlabel#
-
-        % % % Value
-        of
-        All
-        Products
-        figure(2)
-        key = {'Dry USD/T OPC', 'Break-Even Co-Product Value', 'USD/T OPC', ...
-              'Value SCM', 'Value Iron', 'Value Aluminum', 'Value Aggrigate', ...
-              'Value H_2', 'CapEx per T', 'OpEx pet T'}#
-        Y = [Dry_base, (sum(CapExPT) + OpExPT - Dry_base), cost, SCM_value, Iron, ...
-            Al, Agg, H2_value, sum(CapExPT), OpExPT]#
-        bar(Y)#
-        text(1: length(Y), Y, num2str(Y
-        '),'
-        vert
-        ','
-        bottom
-        ','
-        horiz
-        ','
-        center
-        ')#
-        box
-        off
-        hold
-        on
-        ylabel({'$/T OPC'})
-        set(gca, 'XTickLabel', key, 'Fontsize', 22, 'XTickLabelRotation', 45)#
-
-        % % % % % heat, add
-        equivlent
-        heat
-        to
-        graph!!!!!!!!!!!!!
-
-        figure(3)
-        key = {'Dry Process CapEx', 'Brimstone CapEx'}#
-        stack = {'Cement + SCM Plant', 'Hydrogen', 'Acid Regeneration', 'Acid Reactor'}#
-        DryCapEx = [DryCapExMat(1), 0, 0, 0]#
-        BrimCapEx = [CapExMat(1) *not (Dry), CapExMat(2) * echem *not (Dry), ...
-                    CapExMat(3) *not (Dry), CapExMat(4) *not (Dry)]#
-        % ECapEx = [CapExMat(1) + CapExMat(6), CapExMat(5) * ((SMR & & Dry) | | (echem & &not (Dry))), 0, 0]#
-        h = bar([DryCapEx#
-        BrimCapEx], 'stacked')#
-        hold
-        on
-        ylabel({'CapEx, 1MT OPC Plant (USD)'})
-        set(gca, 'XTickLabel', key, 'Fontsize', 22, 'XTickLabelRotation', 45)#
-        legend(h, stack)#
-
-        figure(4)
-        key = {'Dry Process Heat', ...
-              'Equivalent OPC + SCM + Fe_2O_3 + Al_2_O_3 + H_2 Heat', ...
-              'Brimstone Process Heat', 'H_2 Combustion Heat'}#
-        stack = {'Net Reacton Heat', 'Net Sensible Heat', 'Net Latent Heat'}#
-        Q = DryQDry#
-        h = bar([Q#
-        QDry#
-        QBrim *
-        not (Dry)#
-        QH2], 'stacked')#
-        hold
-        on
-        ylabel({'Heat Energy (GJ/T OPC)'})
-        set(gca, 'XTickLabel', key, 'Fontsize', 22, 'XTickLabelRotation', 45)#
-        legend(h, stack)#
-
-        figure(5)
-        key = {'Dry Process', 'Brimstone Total', 'Equivalent OPC + SCM + Fe_2O_3 + Al_2_O_3 + H_2'}#
-        stack = {'Process', 'Heat', 'Electricity'}#
-        DryCapEx = [DryGHG(1), DryGHG(4), DryGHG(2)]#
-        BrimCapEx = [0, GHG(5) *not (cleanH), GHG(3) *not (cleanE)]#
-        ECapEx = [GHG(1), (GHG(4) + GHG_Div(6) + GHG_Div(8)) *not (cleanH), GHG(2) *not (cleanE)]#
-        h = bar([DryCapEx#
-        BrimCapEx#
-        ECapEx], 'stacked')#
-        hold
-        on
-        ylabel({'CO_2 Intensity (T CO_2/TOPC)'})
-        set(gca, 'XTickLabel', key, 'Fontsize', 22, 'XTickLabelRotation', 45)#
-        legend(h, stack)#
-
-        figure(6)
-        key = {'Dry Process OpEx', 'Brimstone OpEx'}#
-        stack = {'O&M', 'Mining', 'Heat', 'Electricity', 'CO_2 Tax', 'Water', 'Sulfur'}#
-        DryCapEx = DryOpExMat#
-        BrimCapEx = [OpExMat(1) *not (Dry), OpExMat(2) *not (Dry), ...
-                    OpExMat(3) *not (Dry), OpExMat(4) *not (Dry), OpExMat(5) *not (Dry), ...
-                    OpExMat(6) *not (Dry), OpExMat(7) *not (Dry), OpExMat(8) *not (Dry), OpExMat(9) *not (Dry)]#
-        h = bar([DryCapEx#
-        BrimCapEx], 'stacked')#
-        hold
-        on
-        ylabel({'OpEx/T OPC, 1MTPY OPC Plant (USD)'})
-        set(gca, 'XTickLabel', key, 'Fontsize', 22, 'XTickLabelRotation', 45)#
-        legend(h, stack)#
-
-        % % % % not correct
-        for H2 case
-
-        figure(7)
-        key = {'Conv. Process Cement', 'Brimstone Cement', 'Conv. Alumina', ...
-        'Brimstone Alimina', 'Conv. Iron Oxide', 'Brimstone Iron Oxide', ...
-        'Conv. SCM', 'Brimstone SCM', 'Conv. H_2', 'Brimstone H_2'}#
-        hb = bar([sum(DryGHG), GHG_Div(1), ...
-        GHG_Div(6), GHG_Div(2), GHG_Div(7), GHG_Div(3), (sum([GHG(1), ...
-        GHG(4) * not (cleanH), GHG(2) * not (cleanE)])- sum(DryGHG)) * Sell_SCM, ...
-        GHG_Div(4), GHG_Div(8), GHG_Div(5)])#
-        hold on
-        ylabel({'TCO_2/T OPC produced'})
-        set(gca, 'XTickLabel', key, 'Fontsize', 22, 'XTickLabelRotation', 45)#
-'''
-
 else:
   t_data = cell(1, len(constants))#
   for i in range(len(constants):
@@ -459,3 +348,4 @@ constants[33], constants[34], constants[35])#
   hold
   on
   end
+'''
