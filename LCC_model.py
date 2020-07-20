@@ -123,10 +123,6 @@ SENS[3] = sens_var[3]
 
 if tornado == 0:
   for i in range(len(sens_var) - 2):
-    #print("--STOOPID--")
-    #print(len(SENS[i]))
-    #print((len(math.ceil(sens_var[i]))))
-    #if ((indexx == -1) and (indexy == -1) and ((len(sens_var[i])) > 1)):
     if ((indexx == -1) and (indexy == -1) and ((len(SENS[i])) > 1)):
       x = sens_var[i] # defines the variable
       indexx = 1      
@@ -141,11 +137,14 @@ if tornado == 0:
   print('Y', y)
   length_x = len(x)
   length_y = len(y)
-  print("Length Check")
-  print(length_x)
-  print(length_y)
+  
+  #print("Length Check")
+  #print(length_x)
+  #print(length_y)
+
+
   z = np.zeros((length_y, length_x))
-  print("Z-length", z)
+  #print("Z-length", z)
   z_CO2 = np.zeros((length_y, length_x))
   z_en = np.zeros((length_y, length_x))
   zz = np.zeros((length_y, length_x)) # number of components in system
@@ -165,20 +164,13 @@ if tornado == 0:
     b = 1 # % indexes
     for j in (y): #THIS MIGHT BE WRONG (CHECK WITH A TEST RUN)
       inputs = (sens_var) # inputs = cell2mat(sens_var) # 
+      print("INPUTS")
+      print(inputs)
       print(inputs[0])
       print(inputs[3])
-      #inputs = np.array([0.0010, 0.0000, 0.0000, -0.0000, 0.0000, 0.0001, -0.0000, 0.0001, 0.0000, 
-      #0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0006, 0.0002, 0.0000, 9.7000, 0.0000, 0.0000, 
-      #-0.0000, 0.0009, 0.0030, 0.0001, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0001,0.0000])
- #     print("Inputs", inputs)
       inputs[indexx] = i # % update the proper input with the next value
       inputs[indexy]= j # % update the proper input with the next value
 
-#DPkW, CO2_Tax, CH, mineCost, heatCost, maxSCM, eCost, kWhr_kg, r, CaO_Frac_Rock, Al2O3_Frac_Rock,
-#              SiO2_Frac_Rock, FeO_Frac_Rock, Fe2O3_Frac_Rock, MgO_Frac_Rock, CO2int, eCO2int, PPT_SCM, S_Cost, CF, TPY,
-#              SA_ratio, Eff, rev, PPT_F, PPT_Al, PPT_Agg, V, W, C_imp, Al_eff, Fe_eff, SCM_eff, OPC_eff, Agg_eff,
-#              CapEx_fac
-    
       [cost, _, _, _, _, _, _, _, _, _, _, _, _, _, _] = cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, 
       Sell_SCM, Sell_Iron, Sell_Alumina, Sell_Aggregate, cleanH, cleanE, 
       inputs[0], inputs[1], inputs[2], inputs[3], inputs[4], inputs[5], 
@@ -249,103 +241,3 @@ if tornado == 0:
 #------------------------------------------------------------------------------------------------------------------------------------------
 #----------------------------------------------------------UNFINISHED CODE-----------------------------------------------------------------
 #------------------------------------------------------------------------------------------------------------------------------------------
-
-#cp = plt.contourf(x, y, z, 100)
-#plt.colorbar(cp)
-#plt.plot(cp)
-
-'''
-else:
-  t_data = cell(1, len(constants))#
-  for i in range(len(constants):
-    costs = [0, 0]#
-    inputs = constants#
-    inputs[i] = minimum(sens_var[i])
-  [costs[1], _, _, _, _, _, _, _, _, _, _, _, _, _, _] = 
-  cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, 
-  Sell_SCM, Sell_Iron, Sell_Alumina, Sell_Aggregate, cleanH, 
-  cleanE, inputs[0], inputs[1], inputs[2], inputs[3], inputs[4], inputs[5], 
-  inputs[6], inputs[7], inputs[8], inputs[9], inputs[10], 
-  inputs[11], inputs[12], inputs[13], inputs[14], inputs[15], 
-  inputs[16], inputs[17], inputs[18], inputs[19], 
-  inputs[20], inputs[21], inputs[22], inputs[23], inputs[24], 
-  inputs[25], inputs[26], inputs[27], inputs[28], inputs[29], 
-  inputs[30], inputs[31], inputs[32], inputs[33], inputs[34], 
-  inputs[35])
-
-  inputs[i] = maximum(sens_var[i])#
-  [costs[2], _, _, _, _, _, _, _, _, _, _, _, _, _, _] = 
-  cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, 
-  Sell_SCM, Sell_Iron, Sell_Alumina, Sell_Aggregate, cleanH, 
-  cleanE, inputs[0], inputs[1], inputs[2], inputs[3], inputs[4], inputs[5], 
-  inputs[6], inputs[7], inputs[8], inputs[9], inputs[10], 
-  inputs[11], inputs[12], inputs[13], inputs[14], inputs[15], 
-  inputs[16], inputs[17], inputs[18], inputs[19], inputs[20], 
-  inputs[21], inputs[22], inputs[23], inputs[24], 
-  inputs[25], inputs[26], inputs[27], inputs[28], inputs[29], 
-  inputs[30], inputs[31], inputs[32], inputs[33], inputs[34], 
-  inputs[35])#
-  t_data[i] = [costs]#
-
-
- # Names of the Y-axis ticks 
-names = np.array['Electrolyzer Cost (USD/kW) 50->1000', 'CO_2 Tax (USD/T CO_2) -190->100', 
-'H_2 price (USD/kg)1->4', 'Mining Cost (USD/T) 3->10', 'Cost of Heat (USD/GJ) 1->10', 
-'SCM Sold Per T OPC (T SCM/T OPC) 0.4->5.3', 'Electricity Cost ($/kWhr) 0.01->0.1', 
-'kWhr per kg H_2 5->30', 'IRR 4%->30%', 'CO_2 Intensity of Heat (T CO_2/GJ) 0->0.2', 
-'CO_2 Intensity of Electricity (T CO_2/kWhr) 0->0.001', 'Price per T of SCM (USD/T) 0->100', 
-'Sulfur Cost (USD/T) 0->200', 'Plant Size (T OPC/yr) 1M->5M', 'Co-product Revenue per T OPC 0->500', 
-'Price per Tonne Fe_2O_3 0->100', 'Price per Tonne Al_2O_3 0->400', 'Price per Tonne Aggregate 0->20', 
-'Operating Cell Voltage (V) 0.2->1.2', 'Water Content (T/T OPC) 0.1-5', 'Improvement in Current Density (A/cm^2) 0.4-> -0.4', 
-'Al production efficiency 50%->100%', 'Fe production efficiency 50%->100%', 'SCM production efficiency 50%->100%', 
-'OPC production efficiency 50%->90%', 'Aggregate production efficiency 50%->100%', 'CapEx multiplier 0.5->2']
-
-# ' Fraction CaO in Source Rock', ...
-# ' Fraction Al_2O_3 in Source Rock', ' Fraction SiO_2 in Source Rock', ...
-# ' Fraction FeO in Source Rock', 'Freaction Fe_2O_3 in Source Rock', ...
-# 'Fraction MgO, in Source Rock',
-# 'Capacity Factor',
-# 'Conventration of Produced Sulfuric Acid', ...
-# 'Heat to Power Efficiency',
-
-vars = [1:9, 16: 19, 21, 24: len(t_data)]#
-a = 1#
-high = np.zeros(shape(vars))#
-low = np.zeros(shape(vars))#
-for i in vars: 
-  n = t_data[i]#
-  high(a) = maximum(n)#
-  low(a) = minimum(n)#
-  a = a + 1#
-[base, _, _, _, _, _, _, _, _, _, _, _, _, _, _] = 
-cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, 
-Sell_SCM, Sell_Iron, Sell_Alumina, Sell_Aggregate, cleanH,
-cleanE, constants[0], constants[1], constants[2], constants[3],
-constants[4], constants[5], constants[6], constants[7], constants[8],
-constants[9], constants[10], constants[11], constants[12], 
-constants[13], constants[14], constants[15], constants[16], 
-constants[17], constants[18], constants[19], constants[20], 
-constants[21], constants[22], constants[23], constants[24], 
-constants[25], constants[26], constants[27], constants[28], 
-constants[29], constants[30], constants[31], constants[32],
-constants[33], constants[34], constants[35])#
-
-  figure
-
-  [high_sort, high_I] = sort(high, 'ascend')#
-  low_sort = low(high_I)#
-  names_sort = names(high_I)#
-  h = barh(high_sort)#
-  hold
-  on
-  barh(low_sort, 'r')
-  bh = get(h, 'BaseLine')#
-  set(bh, 'BaseValue', base)#
-  set(gca, 'yticklabel', names_sort)
-  set(gca, 'Ytick', [1: length(names)], 'YTickLabel', [1: length(names)])
-  set(gca, 'yticklabel', names_sort)
-  xlabel('$USD/T OPC')
-  hold
-  on
-  end
-'''

@@ -92,9 +92,7 @@ def Def_anal(switches, Skarn, Ave_basalt, tornado):
     # turn constants that are to be compared into zeros, and make the array a cell so it can have both doubles and arrays in the array
 
     input_a = constants*switches
-    #print("INPUT_A", np.shape(input_a))
     sensitiv_anal_vect = input_a
-   # print(sensitiv_anal_vect)
 #############################################################################################
     # CHECK: translation is correct
     # Python Syntax: np.arange(start, stop, step)
@@ -149,29 +147,7 @@ def Def_anal(switches, Skarn, Ave_basalt, tornado):
                          CO2int, eCO2int, PPT_SCM, S_Cost, CF, TPY, SA_ratio, Eff, Rev, PPT_F, PPT_Al,
                          PPT_Agg, V, W, CD, Al_eff, Fe_eff, SCM_eff, OPC_eff, Agg_eff, CapEx_Fac], dtype = object)
 
-    #--CHECK--#
-   # print("---VARIABLES---")
-   # print(np.shape(variables))
-    #print(variables)
-   # print("")
-   # print("--CONSTANTS--")
-   # print(np.shape(constants))
-   # print(constants)
-   # print('')
-   # print("---SENS_VAR---")
-    #print(type(sensitiv_anal_vect))
-    #print (sensitiv_anal_vect.round(4))
-   # print(sensitiv_anal_vect)
-   # print("---YOYOYOY")
-  #  sens1 = np.delete(sensitiv_anal_vect, np.where(sensitiv_anal_vect == 0))
-   # print("--SENS1--")
-   # print(sens1)
-   # sens2 = np.delete(sensitiv_anal_vect, np.where(sensitiv_anal_vect != 0))
-   # print("--SENS2--")
-   # print(sens2)
-
-  #  print("DIMENSIONS")
-   # print(np.shape(sensitiv_anal_vect))
+ 
 
     
 ###################################################
@@ -180,20 +156,16 @@ def Def_anal(switches, Skarn, Ave_basalt, tornado):
     for i in range(len(sensitiv_anal_vect)):
      
         if sensitiv_anal_vect[i] == 0:
-            #print("--HELLO--")
 
     # add the standard values of the array to be compared to the end of the cell
             sensitiv_anal_vect = np.append(sensitiv_anal_vect, constants[i])
-            #print("CHECK",sensitiv_anal_vect)
            
             sens_analysis = [[i] for i in sensitiv_anal_vect]
             sensitiv_anal_vect = [i for i in sensitiv_anal_vect]
            
            
-            #print(sensitiv_anal_vect)
             sensitiv_anal_vect[i] = variables[i]
             sens_analysis[i] = variables[i]
-            #print("HELLLOOOOOO", np.shape(sensitiv_anal_vect))
             print("--Sensitivity Check--")
             print(sensitiv_anal_vect)
             print(sens_analysis)

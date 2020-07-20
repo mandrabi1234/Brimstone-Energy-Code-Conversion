@@ -55,20 +55,20 @@ def cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, Sell_SCM, Sell_Iron,
     #   --percent CaO--
     CaO_Frac_Cem = (((molMass_Ca * 3) / (molMass_C3S * mFrac_C3S)) + ((molMass_Ca * 2) / (molMass_C2S * mFrac_C2S)) +
                     ((molMass_Ca * 3) / (molMass_C3A * mFrac_C3A)) + ((molMass_Ca * 4) / (molMass_C4AF * mFrac_C4AF)))
-    print("CaO_Frac_Cem", CaO_Frac_Cem)
-    print("")
+    #print("CaO_Frac_Cem", CaO_Frac_Cem)
+    #print("")
     # --percent SiO2--
     SiO2_Frac_Cem = ((molMass_SiO2 / (molMass_C3S * mFrac_C3S)) + (molMass_SiO2 / (molMass_C2S * mFrac_C2S)))
-    print("SiO2_Frac_Cem", SiO2_Frac_Cem)
-    print("")
+    #print("SiO2_Frac_Cem", SiO2_Frac_Cem)
+    #print("")
     # --percent Al2O3--
     Al2O3_Frac_Cem = ((molMass_Al / (molMass_C3A * mFrac_C3A)) + (102 / (486 * mFrac_C4AF)))
-    print("Al2O3", Al2O3_Frac_Cem)
-    print("")
+    #print("Al2O3", Al2O3_Frac_Cem)
+    #print("")
     # --percent Fe2O3--
     Fe2O3_Frac_Cem = (molMass_F / (molMass_C4AF * mFrac_C4AF))
-    print("Fe2O3_Frac_Cem", Fe2O3_Frac_Cem)
-    print("")
+    #print("Fe2O3_Frac_Cem", Fe2O3_Frac_Cem)
+    #print("")
     molT_C3S = mFrac_C3S / molMass_C3S  # mol C3S /tonne clinker
     molT_C2S = mFrac_C2S / molMass_C2S  # mol C2S /tonne clinker
     molT_C3A = mFrac_C3A / molMass_C3A  # mol C3A /tonne clinker
@@ -88,21 +88,21 @@ def cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, Sell_SCM, Sell_Iron,
 
     # ----Masses----
     T_rock = mptCa_cem / mptCa_Rock  # total T rock needed
-    print("T_rock", T_rock)
-    print("")
+    #print("T_rock", T_rock)
+    #print("")
     # --conventional process mass of mining--
     mass_Dry = CaO_Frac_Cem / CaCO3_frac_dry + 1 - CaO_Frac_Cem
-    print("mass_Dry", mass_Dry)
-    print("")
+    #print("mass_Dry", mass_Dry)
+    #print("")
     # --conventional process CO2 emissions--
     mass_CO2 = mass_Dry - 1
-    print("mass_CO2", mass_CO2)
-    print("")
+    #print("mass_CO2", mass_CO2)
+    #print("")
     # --mass of SCM--
     # -Rock is turned into OPC + SCM except Fe and Mg fractions-
     mass_SCM = T_rock * (1 - (Fe2O3_Frac_Rock + FeO_Frac_Rock + MgO_Frac_Rock)) - (1 - Fe2O3_Frac_Cem)
-    print("mass_SCM", mass_SCM)
-    print("")
+    #print("mass_SCM", mass_SCM)
+    #print("")
     # --Rock can be oxidized into Fe2O3--
     mass_Fe = (((mptFe_Rock + mptFeO_Rock) * T_rock - mptFe_cem) * molMass_F)
     mass_Al = ((mptAl_Rock * T_rock - mptAl_cem) * molMass_Al)
@@ -403,7 +403,7 @@ def cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, Sell_SCM, Sell_Iron,
     input_b = (SH_cem_norm + SH_clay_norm + SH_SMR * HPT * (Dry and SMR or echem and (not Dry)))
     input_c = (LH_clay_norm + LH_SMR * HPT * (Dry and SMR or echem and (not Dry)))
     QDry = np.array([input_a, input_b, input_c])
-    print("QDry",QDry)  # Just to check if the input variable setup works
+    #print("QDry",QDry)  # Just to check if the input variable setup works
     
     # QDry = [((DH_Lime)/1000000 + RH_SMR*HPT*(Dry and SMR or echem and (not Dry))) + Al_conv + Fe_conv,
     #         (SH_cem_norm + SH_clay_norm + SH_SMR*HPT * (Dry and SMR or echem and (not Dry )),
