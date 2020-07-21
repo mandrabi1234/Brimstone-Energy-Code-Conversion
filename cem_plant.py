@@ -53,22 +53,34 @@ def cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, Sell_SCM, Sell_Iron,
 
     #   ----Calculate elemental oxide fraction in the cement----
     #   --percent CaO--
-    CaO_Frac_Cem = (((molMass_Ca * 3) / (molMass_C3S * mFrac_C3S)) + ((molMass_Ca * 2) / (molMass_C2S * mFrac_C2S)) +
-                    ((molMass_Ca * 3) / (molMass_C3A * mFrac_C3A)) + ((molMass_Ca * 4) / (molMass_C4AF * mFrac_C4AF)))
-    #print("CaO_Frac_Cem", CaO_Frac_Cem)
-    #print("")
+    print("--CAO_Frac_Cem Inputs--")
+    print("molMass_C3S", molMass_C3S)
+    print("mFrac_C3S", mFrac_C3S)
+    print("molMass_Ca", molMass_Ca)
+    print("molMass_C2S", molMass_C2S)
+    print("mFrac_C2S", mFrac_C2S)
+    print("molMass_C3A",molMass_C3A)
+    print("mFrac_C3A", mFrac_C3A)
+    print("molMass_C4AF", molMass_C4AF)
+    print("mFrac_C4AF", mFrac_C4AF)
+    
+    CaO_Frac_Cem = molMass_Ca * 3 / molMass_C3S * mFrac_C3S + molMass_Ca * 2 / molMass_C2S * mFrac_C2S + molMass_Ca * 3 / molMass_C3A * mFrac_C3A + molMass_Ca * 4 / molMass_C4AF * mFrac_C4AF  
+    
+    
+    print("CaO_Frac_Cem", CaO_Frac_Cem)
+    print("")
     # --percent SiO2--
-    SiO2_Frac_Cem = ((molMass_SiO2 / (molMass_C3S * mFrac_C3S)) + (molMass_SiO2 / (molMass_C2S * mFrac_C2S)))
-    #print("SiO2_Frac_Cem", SiO2_Frac_Cem)
-    #print("")
+    SiO2_Frac_Cem = molMass_SiO2 / molMass_C3S * mFrac_C3S + molMass_SiO2 / molMass_C2S * mFrac_C2S
+    print("SiO2_Frac_Cem", SiO2_Frac_Cem)
+    print("")
     # --percent Al2O3--
-    Al2O3_Frac_Cem = ((molMass_Al / (molMass_C3A * mFrac_C3A)) + (102 / (486 * mFrac_C4AF)))
-    #print("Al2O3", Al2O3_Frac_Cem)
-    #print("")
+    Al2O3_Frac_Cem = molMass_Al / molMass_C3A * mFrac_C3A + 102 / 486 * mFrac_C4AF
+    print("Al2O3", Al2O3_Frac_Cem)
+    print("")
     # --percent Fe2O3--
-    Fe2O3_Frac_Cem = (molMass_F / (molMass_C4AF * mFrac_C4AF))
-    #print("Fe2O3_Frac_Cem", Fe2O3_Frac_Cem)
-    #print("")
+    Fe2O3_Frac_Cem = molMass_F / molMass_C4AF * mFrac_C4AF
+    print("Fe2O3_Frac_Cem", Fe2O3_Frac_Cem)
+    print("")
     molT_C3S = mFrac_C3S / molMass_C3S  # mol C3S /tonne clinker
     molT_C2S = mFrac_C2S / molMass_C2S  # mol C2S /tonne clinker
     molT_C3A = mFrac_C3A / molMass_C3A  # mol C3A /tonne clinker
@@ -88,32 +100,31 @@ def cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, Sell_SCM, Sell_Iron,
 
     # ----Masses----
     T_rock = mptCa_cem / mptCa_Rock  # total T rock needed
-    #print("T_rock", T_rock)
-    #print("")
+    print("T_rock", T_rock)
+    print("")
     # --conventional process mass of mining--
     mass_Dry = CaO_Frac_Cem / CaCO3_frac_dry + 1 - CaO_Frac_Cem
-    #print("mass_Dry", mass_Dry)
-    #print("")
+    print("mass_Dry", mass_Dry)
+    print("")
     # --conventional process CO2 emissions--
     mass_CO2 = mass_Dry - 1
-    #print("mass_CO2", mass_CO2)
-    #print("")
+    print("mass_CO2", mass_CO2)
+    print("")
     # --mass of SCM--
     # -Rock is turned into OPC + SCM except Fe and Mg fractions-
     mass_SCM = T_rock * (1 - (Fe2O3_Frac_Rock + FeO_Frac_Rock + MgO_Frac_Rock)) - (1 - Fe2O3_Frac_Cem)
-    #print("mass_SCM", mass_SCM)
-    #print("")
+    print("mass_SCM", mass_SCM)
+    print("")
     # --Rock can be oxidized into Fe2O3--
-    mass_Fe = (((mptFe_Rock + mptFeO_Rock) * T_rock - mptFe_cem) * molMass_F)
-    mass_Al = ((mptAl_Rock * T_rock - mptAl_cem) * molMass_Al)
+    mass_Fe = ((mptFe_Rock + mptFeO_Rock) * T_rock - mptFe_cem) * molMass_F
+    mass_Al = ((mptAl_Rock) * T_rock - mptAl_cem) * molMass_Al
     mass_Agg = T_rock - 1
 
     # ----Acid and H2 needs----
-    molH2SO4 = ((
-                        3 * mptAl_Rock + mptMg_Rock + 3 * mptFe_Rock + mptFeO_Rock + mptCa_Rock) * T_rock)  # mol sufuric acid per T OPC
+    molH2SO4 = (3 * mptAl_Rock + mptMg_Rock + 3 * mptFe_Rock + mptFeO_Rock + mptCa_Rock) * T_rock  # mol sufuric acid per T OPC
     H_output = molH2SO4 * 2 / 1000 * TPYcal / 365  # kg H2/day
-    HPT = ((H_output * 365) / TPYcal)  # kg H2 per tonne clinker
-    SAPT = (molH2SO4 * molMass_H2SO4)  # T H2SO4 per tonne clinker
+    HPT = H_output * 365 / TPYcal  # kg H2 per tonne clinker
+    SAPT = molH2SO4 * molMass_H2SO4  # T H2SO4 per tonne clinker
 
     # ----------Thermodynamic calculations Chemical Process Leach via HCl----------
 
@@ -217,23 +228,22 @@ def cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, Sell_SCM, Sell_Iron,
     DH_C2S = (C2S - 2 * CaO - SiO2) * molT_C2S  # heat of formation C2S
     DH_C3S = (C3S - 3 * CaO - SiO2) * molT_C3S  # heat of formation C3S
     DH_C3A = (C3A - 3 * CaO - Al2O3) * molT_C3A  # heat of formation C3A
-    DH_C4AF = (C4AF - 4 * CaO - Al2O3 - Fe2O3) * molT_C4AF  # heat of formation C4AF
+    DH_C4AF = (C4AF - 4 * CaO - Al2O3) - Fe2O3 * molT_C4AF  # heat of formation C4AF
 
     # ---Heat from thermally decomposing limestone---
     DH_Lime = (CaO + CO2 - CaCO3) * mptCa_cem  # heat of formation CaO from CaCO3
 
     # ---Acid Regeneration---
     #   Sulfuric acid is regenerated via the contact process
-    S_WasteCost = mptMg_Rock * T_rock * molMass_S * S_Cost
+    S_WasteCost = (mptMg_Rock) * T_rock * molMass_S * S_Cost
 
     #   If SO2 was regenerated, how much energy is needed?
-    S_RegenHeatCost = ((DH_MgOProd / 1000000) * heatCost)
+    S_RegenHeatCost = (DH_MgOProd / 1000000) * heatCost
 
     lossFrac = 0.1  # SO2 losses, that need to be replaced with sulfur
 
     # ---Contact process regenerates the H2SO4---
-    DH_CP = ((H2SO4 - SO2 - H2OL) * T_rock * (3 * mptAl_Rock + mptMg_Rock + 3 * mptFe_Rock + mptCa_Rock + mptFeO_Rock)
-             * (not echem))
+    DH_CP = (H2SO4 - SO2 - H2OL) * T_rock * (3 * mptAl_Rock + mptMg_Rock + 3 * mptFe_Rock + mptCa_Rock + mptFeO_Rock) * (not echem)
 
     # ------------------------
     DH_CP = 0
@@ -264,9 +274,7 @@ def cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, Sell_SCM, Sell_Iron,
         LH_Brimstone = DH_MgOProd / 1000000 + LH_Brimstone
         DH_MgOProd = 0
 
-    DH_Brimstone = (
-            (DH_GypDecomp + (DH_C2S + DH_C3S + DH_C4AF + DH_C3A) + DH_Al2O3_Prod_cem + DH_Fe2O3Prod_cem) / 1000000
-            + (KaolProd + DH_MgOProd + DH_Fe2O3Prod) / 1000000)
+    DH_Brimstone = (DH_GypDecomp + (DH_C2S + DH_C3S + DH_C4AF + DH_C3A) + DH_Al2O3_Prod_cem + DH_Fe2O3Prod_cem) / 1000000 + (KaolProd + DH_MgOProd + DH_Fe2O3Prod) / 1000000
 
     # ----Sensible and Latent Heat requirements----
     # ---Define some constants---
@@ -285,17 +293,13 @@ def cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, Sell_SCM, Sell_Iron,
     DT_clinker_dry = 550  # Delta T to bring to clinker temp for the dry process
 
     # ---Sensible heat required to make clinker in the brimstone process (GJ/T OPC)---
-    SH_Cinker = ((cp_rock * (mptAl_cem * molMass_Al + mptFe_cem * molMass_F + mptSi_cem * molMass_SiO2 +
-                             mptCa_cem * molMass_CaSO4) * DT_clinker) * SH_eff)
+    SH_Cinker = (cp_rock * (mptAl_cem * molMass_Al + mptFe_cem * molMass_F + mptSi_cem * molMass_SiO2 + mptCa_cem * molMass_CaSO4) * DT_clinker) * SH_eff
 
-    SH_CinkerPreheat = (
-            (cp_rock * (mptAl_cem * molMass_Al2SO43 + mptFe_cem * molMass_Fe2SO43 + mptSi_cem * molMass_SiO2 +
-                        mptCa_cem * molMass_CaSO4) * DT_Kaolin) * SH_eff)
+    SH_CinkerPreheat = (cp_rock * (mptAl_cem * molMass_Al2SO43 + mptFe_cem * molMass_Fe2SO43 + mptSi_cem * molMass_SiO2 + mptCa_cem * molMass_CaSO4) * DT_Kaolin) * SH_eff
 
-    SH_Iron = (cp_rock * ((molMass_Fe2SO43 * mptFe_Rock + molMass_FeSO4 * mptFeO_Rock + molMass_MgSO4 * mptMg_Rock)
-                          * T_rock - mptFe_cem * molMass_Fe2SO43) * DT_iron * SH_eff)
+    SH_Iron = cp_rock * ((molMass_Fe2SO43 * mptFe_Rock + molMass_FeSO4 * mptFeO_Rock + molMass_MgSO4 * mptMg_Rock) * T_rock - mptFe_cem * molMass_Fe2SO43) * DT_iron * SH_eff
 
-    SH_Al = (cp_rock * (mptAl_Rock * T_rock - mptAl_cem) * molMass_Al2SO43 * DT_Kaolin * SH_eff)
+    SH_Al = cp_rock * (mptAl_Rock * T_rock - mptAl_cem) * (molMass_Al2SO43) * DT_Kaolin * SH_eff
 
     SH_kaolin = ((cp_rock * (mptAl_Rock * T_rock - mptAl_cem) * (molMass_SiO2 * 2) * DT_Kaolin) * SH_eff)
 
@@ -310,9 +314,8 @@ def cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, Sell_SCM, Sell_Iron,
     #   free water that needs to be boiled off of the precipitants plus water in solution
     Fe_Sol = 3  # ratio of sulfate salts to water (typical solubility)
 
-    M_solution = (  (mptCa_Rock * molMass_CaSO4 + mptSi_Rock * molMass_SiO2) * T_rock * FreeWater +
-                 (mptAl_Rock * molMass_AlCl26H2O * 2) * T_rock * AlWater + (mptFe_Rock * molMass_Fe2SO43 + mptFeO_Rock
-                    * molMass_FeSO4 + mptMg_Rock * molMass_MgSO4) * T_rock / Fe_Sol )
+    M_solution =   (mptCa_Rock * molMass_CaSO4 + mptSi_Rock * molMass_SiO2) * T_rock * FreeWater + (mptAl_Rock * molMass_AlCl26H2O * 2) * T_rock * AlWater + (mptFe_Rock * molMass_Fe2SO43 + mptFeO_Rock
+                    * molMass_FeSO4 + mptMg_Rock * molMass_MgSO4) * T_rock / Fe_Sol 
 
     #   aluminum chloride forms a hexahydrate, so 12 waters need to be boiled off at these temps,
     #   CaSO4 will not form a hydrate, so it is not included
@@ -331,8 +334,7 @@ def cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, Sell_SCM, Sell_Iron,
     #   iron sulfate is added here because it decomposes at contact process temps
     #   https://onlinelibrary.wiley.com/doi/pdf/10.1002/jctb.2720220505
 
-    QWater = ((SH_water + LH_Brimstone + (DH_AnDecomp + DH_WoDecomp + DH_GypProd + DH_AS) / 1000000) * chemical
-              + DH_CP / 1000000)
+    QWater = (SH_water + LH_Brimstone + (DH_AnDecomp + DH_WoDecomp + DH_GypProd + DH_AS) / 1000000) * chemical + (DH_CP) / 1000000
 
     ''' Heat that is low temp enough to be provided by the contact process
         heat needed for brimstone process, water cannot be recycled so if contact
@@ -347,23 +349,15 @@ def cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, Sell_SCM, Sell_Iron,
     if QBrimstone < 0:
         QBrimstone = 0
 
-    QWCem = ((mptCa_cem * molMass_CaSO4 + mptSi_cem * molMass_SiO2) * FreeWater + (
-            mptAl_cem * molMass_AlCl26H2O * 2) * AlWater
-             + (mptFe_cem * molMass_Fe2SO43) / Fe_Sol + (mptAl_cem * AlumAd) * molMass_H2O * (cp_H2O * DT_H2O + LV_H2O))
+    QWCem = (mptCa_cem * molMass_CaSO4 + mptSi_cem * molMass_SiO2) * FreeWater + ( mptAl_cem * molMass_AlCl26H2O * 2) * AlWater + (mptFe_cem * molMass_Fe2SO43) / Fe_Sol + (mptAl_cem * AlumAd) * molMass_H2O * (cp_H2O * DT_H2O + LV_H2O)
 
-    QWAlumina = ((((mptAl_Rock * T_rock - mptAl_cem) * molMass_AlCl26H2O * 2) * AlWater + (
-            (mptAl_Rock * T_rock - mptAl_cem) * AlumAd)
-                  * molMass_H2O) * (cp_H2O * DT_H2O + LV_H2O))
+    QWAlumina = (((mptAl_Rock * T_rock - mptAl_cem) * molMass_AlCl26H2O * 2) * AlWater + ((mptAl_Rock * T_rock - mptAl_cem) * AlumAd) * molMass_H2O) * (cp_H2O * DT_H2O + LV_H2O)
 
-    QWIron = ((
-                      mptFe_Rock * molMass_Fe2SO43 + mptFeO_Rock * molMass_FeSO4 + mptMg_Rock * molMass_MgSO4) * T_rock / Fe_Sol -
-              (mptFe_cem * molMass_Fe2SO43) / Fe_Sol)
+    QWIron = (mptFe_Rock * molMass_Fe2SO43 + mptFeO_Rock * molMass_FeSO4 + mptMg_Rock * molMass_MgSO4) * T_rock / Fe_Sol - (mptFe_cem * molMass_Fe2SO43) / Fe_Sol
 
     QWSCM = SH_water + LH_Brimstone - QWCem - QWAlumina * Sell_Alumina - QWIron * Sell_Iron
 
-    QBrimCem = (
-                       DH_GypDecomp + DH_C2S + DH_C3S + DH_C4AF + DH_C3A + DH_SB + DH_Al2O3_Prod_cem + DH_Fe2O3Prod_cem) / 1000000 \
-               + (SH_Cinker + SH_CinkerPreheat) * SH_eff + QWCem * echem
+    QBrimCem = (DH_GypDecomp + DH_C2S + DH_C3S + DH_C4AF + DH_C3A + DH_SB + DH_Al2O3_Prod_cem + DH_Fe2O3Prod_cem) / 1000000 + (SH_Cinker + SH_CinkerPreheat) * SH_eff + QWCem * echem
 
     QBrimSCM = KaolProd / 1000000 + SH_kaolin * SH_eff * (not Sell_Alumina) + QWSCM * echem
     QBrimAl = (DH_Al2O3_Prod / 1000000 + SH_Al * SH_eff + QWAlumina * echem) * Sell_Alumina
@@ -399,11 +393,11 @@ def cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, Sell_SCM, Sell_Iron,
 #--------------------------------------------------------------------------------------------
     # CONVERSION CHECK: GO OVER THIS CODE WITH CODY
     # ---create input variables---
-    input_a = (DH_Lime / 1000000 + RH_SMR * HPT * (Dry and SMR or echem and (not Dry))) + Al_conv + Fe_conv
+    input_a = ((DH_Lime) / 1000000 + RH_SMR * HPT * (Dry and SMR or echem and (not Dry))) + Al_conv + Fe_conv
     input_b = (SH_cem_norm + SH_clay_norm + SH_SMR * HPT * (Dry and SMR or echem and (not Dry)))
     input_c = (LH_clay_norm + LH_SMR * HPT * (Dry and SMR or echem and (not Dry)))
     QDry = np.array([input_a, input_b, input_c])
-    #print("QDry",QDry)  # Just to check if the input variable setup works
+    print("QDry",QDry)  # Just to check if the input variable setup works
     
     # QDry = [((DH_Lime)/1000000 + RH_SMR*HPT*(Dry and SMR or echem and (not Dry))) + Al_conv + Fe_conv,
     #         (SH_cem_norm + SH_clay_norm + SH_SMR*HPT * (Dry and SMR or echem and (not Dry )),
@@ -459,18 +453,18 @@ def cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, Sell_SCM, Sell_Iron,
     RawCrush = (2.5 + 1.25 + 2.08) * ex * (massRatio - 1 * retro)
     Mill = (16.5 + 0.5 + 1.9 + 2 + 0.5 + 0.5 + 5.3) * ex * (massRatio - 1 * retro)
     Preheat = (5.4 + 0.8) * ex * (massRatio * OPC_eff - 1 * retro)
-    PreCal = 0.5 * ex
-    Kiln = 12 * ex * (massRatio * OPC_eff - 1 * retro)
+    PreCal = (0.5) * ex
+    Kiln = (12) * ex * (massRatio * OPC_eff - 1 * retro)
     ClinkCool = (12 + 2 + 0.5 + 1.5 + 9 + 0.3) * ex * (massRatio * OPC_eff - 1 * retro)
 
     if Dry == 1:
-        CoalPrep = 5 * ex
-        PetCokePrep = 5 * ex
+        CoalPrep = (5) * ex
+        PetCokePrep = (5) * ex
     else:
-        CoalPrep = 5 * ex * en
-        PetCokePrep = 5 * ex * en
+        CoalPrep = (5) * ex * en
+        PetCokePrep = (5) * ex * en
 
-    CemMill = (10 + 10) * ex * (not retro)
+    CemMill = (10 + 10) * (ex) * (not retro)
     PackAndLoad = (5 + 5 + 3) * (ex * (not retro))
 
     mass = mass_Dry
@@ -479,16 +473,16 @@ def cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, Sell_SCM, Sell_Iron,
         mass = T_rock
 
     EquipCapEx = RawCrush + Mill + Preheat + PreCal + Kiln + ClinkCool + CoalPrep + PetCokePrep + CemMill + PackAndLoad
-    DesEng = 42 * ex
-    Construc = 48 * ex
-    Other = 8 * ex * (not retro)
-    EPC = 17 * ex
+    DesEng = (42) * ex
+    Construc = (48) * ex
+    Other = (8) * ex * (not retro)
+    EPC = (17) * ex
     Installed = DesEng + Construc + Other + EPC + EquipCapEx
     TailCapEx = TPYcal * 8 / 1000000 * mass * TailShip
     MineCapEx = TPYcal * 0.5 / 1000000 * mass * TailShip
-    Contig = 12 * ex
-    Fees = 5 * ex
-    OwnCost = 12 * ex * (not retro)
+    Contig = (12) * ex
+    Fees = (5) * ex
+    OwnCost = (12) * ex * (not retro)
 
     CemCapEx = Installed + Contig + Fees + OwnCost + TailCapEx + MineCapEx
     CemCapEx = CemCapEx * 1000000 * TPYcal / 1000000  # linear cost relation with size
@@ -510,8 +504,7 @@ def cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, Sell_SCM, Sell_Iron,
     PowerElectronics = 22.5 * V_ratio / CF_e
     MechBoP = 5.5 / CF_e
     OtherBoP = 3
-    lyser_CapEx = (Stacks + GasManagement + WaterDeliver + Thermal + PowerElectronics + MechBoP + OtherBoP) *\
-                  InstallFac / BaseHPT * H_output * 365 * 1000000 * echem
+    lyser_CapEx = (Stacks + GasManagement + WaterDeliver + Thermal + PowerElectronics + MechBoP + OtherBoP) * InstallFac / BaseHPT * H_output * 365 * 1000000 * echem
 
     SMR_CapEx = 174611028 / 124638630
     SMR_CapEx = SMR_CapEx * HPT * TPYcal
@@ -529,7 +522,7 @@ def cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, Sell_SCM, Sell_Iron,
     # create input variables
     GHG = np.array([
         mass_CO2 + HPT * 10 / 1000 * ((SMR and Dry) or (echem and (not Dry))) * .5, # 1.
-                 ePT * eCO2int, # 2.
+                 (ePT) * eCO2int, # 2.
                  (ePT + eH2 * echem) * eCO2int * (not Dry), #3.
                  CO2int * (QNormal + QClay_norm) + HPT * 10 / 1000 * ((SMR and Dry) or (echem and (not Dry))) * .5, #4.
                  CO2int * QBrimstone * (not Dry)]) #5.
@@ -631,7 +624,7 @@ def cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, Sell_SCM, Sell_Iron,
 
     if mass_SCMnew * SCM_eff > maxSCM:
         mass_SCMnew = maxSCM
-    elif (Dry == 1 and CC == 0):
+    elif Dry == 1 and CC == 0:
         mass_SCMnew = 0
 
 

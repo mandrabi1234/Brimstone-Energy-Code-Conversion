@@ -153,22 +153,34 @@ def Def_anal(switches, Skarn, Ave_basalt, tornado):
 ###################################################
 #CONVERSION CHECK: GO THROUGH THIS CODE AGAIN
 # put the arrays that are to be compared into the sensitive_anal_vec
+    sens_analysis = [[i] for i in sensitiv_anal_vect]
+    sensitiv_anal_vect = [i for i in sensitiv_anal_vect]
+    check = sensitiv_anal_vect[0]
+    print(check)
+    #print(check[0])
+
+    print("Before Line 158", sensitiv_anal_vect[0])
     for i in range(len(sensitiv_anal_vect)):
-     
+
+        print(sensitiv_anal_vect)
+
+        print("--CHECK--",sensitiv_anal_vect)
         if sensitiv_anal_vect[i] == 0:
 
     # add the standard values of the array to be compared to the end of the cell
             sensitiv_anal_vect = np.append(sensitiv_anal_vect, constants[i])
-           
-            sens_analysis = [[i] for i in sensitiv_anal_vect]
+            print(sensitiv_anal_vect)
+
+           # sens_analysis = [[i] for i in sensitiv_anal_vect]
             sensitiv_anal_vect = [i for i in sensitiv_anal_vect]
-           
-           
+            print("--Sensitivity Check--")
+
+            print(sensitiv_anal_vect)
+            #print(sens_analysis)
             sensitiv_anal_vect[i] = variables[i]
             sens_analysis[i] = variables[i]
-            print("--Sensitivity Check--")
-            print(sensitiv_anal_vect)
-            print(sens_analysis)
+            #print(sensitiv_anal_vect)
+            print("--SENS_ANALYSIS--", sens_analysis)
 
 
 
