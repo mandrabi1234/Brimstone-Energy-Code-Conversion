@@ -243,19 +243,350 @@ if tornado == 0:
 
   zlabel = 'Levelized Cost of Cement/T'
   # log the cost if necessary, unless there are negative values
-  if log_plot == 1 and (sum(sum(abs(z))) <= sum(sum(z))):
+  if log_plot == 1 and (np.sum(np.sum(abs(z))) <= np.sum(np.sum(z))):
     z = math.log(z)#
     zlabel = 'log cost per kg of hydrogen'#
-  
+
 #------------------------------------------------------------------------------------------------------------------------------------------
 #----------------------------------------------------------UNFINISHED CODE-----------------------------------------------------------------
 #------------------------------------------------------------------------------------------------------------------------------------------
 
-#cp = plt.contourf(x, y, z, 100)
-#plt.colorbar(cp)
-#plt.plot(cp)
+  #------Figure 1------
+  fig1 = plt.figure(figsize = (6,5))
+  left, bottom, width, height = 0.1, 0.1, 0.8, 0.8
+  ax = fig1.add_axes([left, bottom, width, height])
 
+  cp = plt.contourf(x, y, z)
+  plt.colorbar(cp)
+
+  ax.set_title('Contour Plot')
+  ax.set_xlabel('x (cm')
+  ax.set_ylabel('y (cm)')
+  plt.show(fig1)
+
+  #------Figure 2------
+  fig2 = plt.figure(figsize = (6,5))
+  left, bottom, width, height = 0.1, 0.1, 0.8, 0.8
+  ax = fig2.add_axes([left, bottom, width, height])
+
+  data = {"Dry USD/T OPC":Dry_base, "Break-Even Co-Product Value":((CapExPT) + OpExPT - Dry_base), 
+  "USD/T OPC":cost, "Value SCM":SCM_value, "Value Iron":Iron, "Value Aluminum":Al, "Value Aggregate":Agg, 
+  "Value H_2":H2_value, "CapEx per T":(CapExPT), "OpEx pet T":OpExPT} 
+
+  key = list(data.keys())
+  Y = list(data.values())
+
+  bar = plt.bar(key, Y, width = 0.5)
+  plt.xticks(rotation = 45)
+  ylabel = ("$/T OPC")
+
+  for index, value in enumerate(Y):
+      plt.text(index -0.5, value, str(value))
+  plt.show(fig2)
+
+  #------Figure 3------
+  fig3 = plt.figure()
+  rc('font', weight = 'bold')
+  DryCapEx = np.array([DryCapExMat[0], 0, 0, 0])
+  BrimCapEx = np.array([CapExMat[0] *(not Dry), CapExMat[1] * echem *(not Dry), CapExMat[2] *(not Dry), CapExMat[3] *(not Dry)])
+
+  print("---FIGURE 3 CHECKER---")
+  print(DryCapEx)
+  print(BrimCapEx)
+
+  bars1 = [DryCapEx[0], BrimCapEx[0]]
+  bars2 = [DryCapEx[1], BrimCapEx[1]]
+  bars3 = [DryCapEx[2], BrimCapEx[2]]
+  bars4 = [DryCapEx[3], BrimCapEx[3]]
+
+  #bars = np.add(bars1, bars2, bars3).tolist()
+
+  r = [0, 1]
+
+  names = ['DryCapEx', 'BrimCapEx']
+
+  barwidth = 0.5
+
+  plt.bar(r, bars1, label = 'Cement + SCM Plant', color = '#b51a0e', edgecolor = 'black', width = barwidth)
+  plt.bar(r, bars2, label = 'Hyrogen', bottom = bars1, color = '#557f2d', edgecolor = 'black', width = barwidth)
+  plt.bar(r, bars3, label = 'Acid Regeneration', bottom = bars2, color = 'yellow', edgecolor = 'black', width = barwidth)
+  plt.bar(r, bars4, label = 'Acid Reactor', bottom = bars3, color = 'blue', edgecolor = 'black', width = barwidth)
+
+
+  plt.xticks(r, names, fontweight = 'bold')
+  plt.xticks(rotation = 45)
+  plt.ylabel("CapEx, 1MT OPC Plant (USD)")
+  plt.legend()
+  plt.show(fig3)
+
+  #------Figure 4------
+  fig4 = plt.figure(figsize = (6,5))
+  rc('font', weight = 'bold')
+
+  Q = DryQDry
+  out = QBrim*(not Dry)
+
+  bars1 = [Q[0], QDry[0], out[0], QH2[0]]
+  bars2 = [Q[1], QDry[1], out[1], QH2[1]]
+  bars3 = [Q[2], QDry[2], out[2], QH2[2]]
+
+  bars = np.add(bars1, bars2).tolist()
+  r = [0, 1, 2, 3]
+
+  names = ['Dry Process Heat', 'Equivalent OPC + SCM + Fe_2O_3 + Al_2_O_3 + H_2 Heat', 'Brimstone Process Heat', 'H_2 Combustion Heat']
+  barWidth = 0.5
+
+  plt.bar(r, bars1, color = '#fa9f20', edgecolor = 'black', width = barWidth, label = 'Net Reaction Heat')
+  plt.bar(r, bars2, bottom = bars1, color = '#f7d723', edgecolor = 'black', width = barWidth, label = 'Net Sensible Heat')
+  plt.bar(r, bars3, bottom = bars, color = '#b023f7', edgecolor = 'black', width = barWidth, label = 'Net Laten Heat')
+
+  plt.xticks(r, names, fontweight = 'bold', rotation = 45)
+  plt.ylabel("Heat Energy (GJ/T OPC)")
+  plt.legend()
+  plt.show(fig4)
+
+  #------Figure 5------
+  fig5 = plt.figure(figsize = (6,5))
+  rc('font', weight = 'bold')
+
+  DryCapEx = np.array([DryGHG[0], DryGHG[3], DryGHG[1]])
+  BrimCapEx = np.array([0, GHG[4]*(not cleanH), GHG[2]*(not cleanE)])
+  ECapEx = np.array([GHG[0], (GHG[3]+GHG_Div[5]+GHG_Div[7])*(not cleanH), GHG[1]*(not cleanE)])
+
+  bars1 = [DryCapEx[0], BrimCapEx[0], ECapEx[0]]
+  bars2 = [DryCapEx[1], BrimCapEx[1], ECapEx[1]]
+  bars3 = [DryCapEx[2], BrimCapEx[2], ECapEx[2]]
+
+  bars = np.add(bars1, bars2).tolist()
+
+  r = [0, 1, 2]
+
+  names = ['Dry Process', 'Brimstone Total', 'Equivalent OPC + SCM + Fe_2O_3 + Al_2_O_3 + H_2']
+  barWidth = 0.5
+
+  plt.bar(r, bars1, color = '#fa9f20', edgecolor = 'black', width = barWidth, label = 'Process')
+  plt.bar(r, bars2, bottom = bars1, color = '#f7d723', edgecolor = 'black', width = barWidth, label = 'Heat')
+  plt.bar(r, bars3, bottom = bars, color = '#b023f7', edgecolor = 'black', width = barWidth, label = 'Electricity')
+
+  plt.xticks(r, names, fontweight = 'bold', rotation = 45)
+  plt.ylabel("CO_2 Intensity (T CO_2/TOPC)")
+  plt.legend()
+  plt.show(fig5)
+
+  #------Figure 6------
+  # NOTE: Discuss graph output and labeling with Cody via Google Meets
+  fig6 = plt.figure(figsize = (6,5))
+  rc('font', weight = 'bold')
+
+  DryCapEx = DryOpExMat
+  BrimCapEx = np.array([OpExMat[0] * (not Dry), OpExMat[1] * (not Dry),OpExMat[2] * (not Dry), OpExMat[3] * (not Dry), OpExMat[4] * (not Dry), OpExMat[5] * (not Dry), OpExMat[6] * (not Dry), OpExMat[7] * (not Dry), OpExMat[8] * (not Dry)])
+
+  bars1 = [DryCapEx[0], BrimCapEx[0]]
+  bars2 = [DryCapEx[1], BrimCapEx[1]]
+  bars3 = [DryCapEx[2], BrimCapEx[2]]
+  bars4 = [DryCapEx[3], BrimCapEx[3]]
+  bars5 = [DryCapEx[4], BrimCapEx[4]]
+  bars6 = [DryCapEx[5], BrimCapEx[5]]
+  bars7 = [DryCapEx[6], BrimCapEx[6]]
+  bars8 = [DryCapEx[7], BrimCapEx[7]]
+  bars9 = [DryCapEx[8], BrimCapEx[8]]
+  #bars = np.add(bars1, bars2, bars3, bars4, bars5, bars6, bars7, bars8, bars9).tolist()
+
+  r = [0, 1]
+  names = ['Dry Process OpEX', 'Brimstone OpEx']
+  barWidth = 0.65
+
+  plt.bar(r, bars1, color='#b51a0e', label = 'O&M', edgecolor='black', width=barWidth)
+  plt.bar(r, bars2, bottom = bars1, color='#0d26a3', label = 'Mining', edgecolor='black', width=barWidth)
+  plt.bar(r, bars3, bottom = bars2, color='#cf6c11', label = 'Heat', edgecolor='black', width=barWidth)
+  plt.bar(r, bars4, bottom = bars3, color='#7f03fc', label = 'Electricity', edgecolor='black', width=barWidth)
+  plt.bar(r, bars5, bottom = bars4, color='#e3a214', label = 'CO_2 Tax', edgecolor='black', width=barWidth)
+  plt.bar(r, bars6, bottom = bars5, color='#53c213', label = 'Water', edgecolor='black', width=barWidth)
+  plt.bar(r, bars7, bottom = bars6, color='#16c9e0', label = 'Sulfur', edgecolor='black', width=barWidth )
+  plt.bar(r, bars8, bottom = bars7, color='yellow', edgecolor='black', width=barWidth)
+  plt.bar(r, bars9, bottom = bars8, color='black', edgecolor='black', width=barWidth)
+
+  plt.xticks(r, names, fontweight = 'bold', rotation = 45)
+  plt.ylabel = ("OpEx/T OPC, 1MTPY OPC Plant (USD)")
+  plt.legend()
+  plt.show(fig6)
+
+  #------Figure 7------
+  fig7 = plt.figure(figsize = (6,5))
+  rc('font', weight = 'bold')
+
+  data = {"Conv. Process Cement":np.sum(DryGHG), "Brimstone Cement":GHG_Div[0], 
+  "Conv. Alumina":GHG_Div[5], "Brimstone Alimina":GHG_Div[1], "Conv. Iron Oxide":GHG_Div[6], "Brimstone Iron Oxide":GHG_Div[2], 
+  "Conv. SCM":(np.sum(np.array([GHG[0], GHG[4] * (not cleanH), GHG[1] * (not cleanE)])) - np.sum(DryGHG)) * Sell_SCM, 
+  "Brimstone_SCM":GHG[3], "Conv. H_2": GHG_Div[7], "Brimstone H_2":GHG_Div[4]}
+
+  key = list(data.keys())
+  Y = list(data.values())
+  print(Y)
+  print(key)
+  bar = plt.bar(key, Y, width = 0.5)
+  plt.xticks(rotation = 45)
+  ylabel = ("TCO_2/T OPC produced")
+
+  for index, value in enumerate(Y):
+      plt.text(index -0.5, value, str(value))
+      
+  plt.show(fig7)
+
+
+#  t_data = np.arange(1, len(constants)+1, 1)
+#  t_data = [[i] for i in t_data]
+#  print("LENGTH CEHCKER")
+#  print(len(constants))
+#  print(len(t_data))
+#  for i in range(len(constants)):
+#    costs = np.array([109.4230, 109.4230])
+#t_data = [[i] for i in t_data]
+
+#    t_data[i] = costs
+#    print("--YELLOOOOOOOOO--", t_data)
+#  vars = np.array([ 1,  2,  3,  4,  5,  6,  7,  8,  9, 16, 17, 18, 19, 21, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33,
+# 34, 35, 36])
+#  a = 1#
+#  high = np.zeros(vars.shape)#
+#  low = np.zeros(vars.shape)#
+#  for i in vars: 
+#    n = t_data[i]#
+#    high[a] = np.maximum(n)#
+#    low[a] = np.minimum(n)#
+
+#--Continue If-Else Statement (if tornado == 0)--
+else:
+    t_data = np.arange(1, len(constants)+1, 1)
+    t_data = [[i] for i in t_data]
+    for i in range(len(constants)):
+      costs = np.array([0, 0])
+      print(costs)
+      inputs = constants
+      print("Constants ************************************************************************")
+      print(constants)
+      inputs[i] = (sens_var[i])
+      [costs[0], _, _, _, _, _, _, _, _, _, _, _, _, _, _] = cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, 
+      Sell_SCM, Sell_Iron, Sell_Alumina, Sell_Aggregate, cleanH, 
+      cleanE, inputs[0], inputs[1], inputs[2], inputs[3], inputs[4], inputs[5], 
+      inputs[6], inputs[7], inputs[8], inputs[9], inputs[10], 
+      inputs[11], inputs[12], inputs[13], inputs[14], inputs[15], 
+      inputs[16], inputs[17], inputs[18], inputs[19], 
+      inputs[20], inputs[21], inputs[22], inputs[23], inputs[24], 
+      inputs[25], inputs[26], inputs[27], inputs[28], inputs[29], 
+      inputs[30], inputs[31], inputs[32], inputs[33], inputs[34], inputs[35])
+    
+      inputs[i] = (sens_var[i])#
+    
+      [costs[1], _, _, _, _, _, _, _, _, _, _, _, _, _, _] = cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, 
+      Sell_SCM, Sell_Iron, Sell_Alumina, Sell_Aggregate, cleanH, 
+      cleanE, inputs[0], inputs[1], inputs[2], inputs[3], inputs[4], inputs[5], 
+      inputs[6], inputs[7], inputs[8], inputs[9], inputs[10], 
+      inputs[11], inputs[12], inputs[13], inputs[14], inputs[15], 
+      inputs[16], inputs[17], inputs[18], inputs[19], inputs[20], 
+      inputs[21], inputs[22], inputs[23], inputs[24], 
+      inputs[25], inputs[26], inputs[27], inputs[28], inputs[29], 
+      inputs[30], inputs[31], inputs[32], inputs[33], inputs[34], 
+      inputs[35])
+
+      t_data[i] = [costs]#
+
+# Names of the Y-axis ticks 
+    names = np.array(['Electrolyzer Cost (USD/kW) 50->1000', 'CO_2 Tax (USD/T CO_2) -190->100', 
+    'H_2 price (USD/kg)1->4', 'Mining Cost (USD/T) 3->10', 'Cost of Heat (USD/GJ) 1->10', 
+    'SCM Sold Per T OPC (T SCM/T OPC) 0.4->5.3', 'Electricity Cost ($/kWhr) 0.01->0.1', 'kWhr per kg H_2 5->30', 
+    'IRR 4%->30%', 'CO_2 Intensity of Heat (T CO_2/GJ) 0->0.2', 'CO_2 Intensity of Electricity (T CO_2/kWhr) 0->0.001', 
+    'Price per T of SCM (USD/T) 0->100', 'Sulfur Cost (USD/T) 0->200', 'Plant Size (T OPC/yr) 1M->5M', 'Co-product Revenue per T OPC 0->500', 
+    'Price per Tonne Fe_2O_3 0->100', 'Price per Tonne Al_2O_3 0->400', 'Price per Tonne Aggregate 0->20', 'Operating Cell Voltage (V) 0.2->1.2', 
+    'Water Content (T/T OPC) 0.1-5', 'Improvement in Current Density (A/cm^2) 0.4-> -0.4', 
+    'Al production efficiency 50%->100%', 'Fe production efficiency 50%->100%', 'SCM production efficiency 50%->100%', 
+    'OPC production efficiency 50%->90%', 'Aggregate production efficiency 50%->100%', 'CapEx multiplier 0.5->2'])
+
+    # ' Fraction CaO in Source Rock', ...
+    # ' Fraction Al_2O_3 in Source Rock', ' Fraction SiO_2 in Source Rock', ...
+    # ' Fraction FeO in Source Rock', 'Freaction Fe_2O_3 in Source Rock', ...
+    # 'Fraction MgO, in Source Rock',
+    # 'Capacity Factor',
+    # 'Conventration of Produced Sulfuric Acid', ...
+    # 'Heat to Power Efficiency',
+    var1 = np.arange(1, 10, 1)
+    var2 = np.arange(16, 20, 1)
+    var3 = np.array([21])
+    var4 = np.arange(24, len(t_data) + 1, 1)
+    vars = np.hstack((var1, var2, var3, var4))
+    print("----VARS----")
+    print(vars)
+    #[1:9, 16: 19, 21, 24: len(t_data)]#
+    
+    a = 1#
+    high = np.zeros(vars.shape)#
+    low = np.zeros(vars.shape)#
+    for i in vars: 
+      n = t_data[i]#
+      high[a] = np.maximum(n)#
+      low[a] = np.minimum(n)#
+      a = a + 1#
+    [base, _, _, _, _, _, _, _, _, _, _, _, _, _, _] = cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, 
+  Sell_SCM, Sell_Iron, Sell_Alumina, Sell_Aggregate, cleanH, 
+  cleanE, constants[0], constants[1], constants[2], constants[3], 
+  constants[4], constants[5], constants[6], constants[7], constants[8], 
+  constants[9], constants[10], constants[11], constants[12], 
+  constants[13], constants[14], constants[15], constants[16], 
+  constants[17], constants[18], constants[19], constants[20], 
+  constants[21], constants[22], constants[23], constants[24], 
+  constants[25], constants[26], constants[27], constants[28], 
+  constants[29], constants[30], constants[31], constants[32], 
+  constants[33], constants[34], constants[35])#
+
+#--- FINAL FIGURE ---
+    fig8 = plt.figure(figsize = (6,5))
+    rc('font', weight = 'bold')
+    
+    '''
+  figure
+
+    [high_sort, high_I] = sort(high, 'ascend')#
+    low_sort = low(high_I)#
+    names_sort = names(high_I)#
+    h = barh(high_sort)#
+    hold
+    on
+    barh(low_sort, 'r')
+    bh = get(h, 'BaseLine')#
+    set(bh, 'BaseValue', base)#
+    set(gca, 'yticklabel', names_sort)
+    set(gca, 'Ytick', [1: length(names)], 'YTickLabel', [1: length(names)])
+    set(gca, 'yticklabel', names_sort)
+    xlabel('$USD/T OPC')
+    hold
+    on
+    '''
 '''
+  vars = [1:9, 16: 19, 21, 24: len(t_data)]#
+  a = 1#
+  high = np.zeros(shape(vars))#
+  low = np.zeros(shape(vars))#
+  for i in vars: 
+    n = t_data[i]#
+    high(a) = maximum(n)#
+    low(a) = minimum(n)#
+    a = a + 1#
+  [base, _, _, _, _, _, _, _, _, _, _, _, _, _, _] = 
+  cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, 
+  Sell_SCM, Sell_Iron, Sell_Alumina, Sell_Aggregate, cleanH,
+  cleanE, constants[0], constants[1], constants[2], constants[3],
+  constants[4], constants[5], constants[6], constants[7], constants[8],
+  constants[9], constants[10], constants[11], constants[12], 
+  constants[13], constants[14], constants[15], constants[16], 
+  constants[17], constants[18], constants[19], constants[20], 
+  constants[21], constants[22], constants[23], constants[24], 
+  constants[25], constants[26], constants[27], constants[28], 
+  constants[29], constants[30], constants[31], constants[32],
+  constants[33], constants[34], constants[35])#
+
+
+
+
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -280,6 +611,7 @@ ax.set_xlabel('x (cm)')
 ax.set_ylabel('y (cm)')
 plt.show()
 '''
+'''
 fig1 = plt.figure(figsize = (6,5))
 left, bottom, width, height = 0.1, 0.1, 0.8, 0.8
 ax = fig1.add_axes([left, bottom, width, height])
@@ -291,7 +623,7 @@ ax.set_title('Contour Plot')
 ax.set_xlabel('x (cm')
 ax.set_ylabel('y (cm)')
 plt.show(fig1)
-'''
+
         figure(1)
         % filled
         contour
@@ -336,6 +668,7 @@ plt.show(fig1)
         {indexy})#
         c.Label.String = zlabel#
 '''
+'''
 print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
 print("             Data Visualization Check             ")
 print("Dry_base", Dry_base)
@@ -372,7 +705,7 @@ ylabel = ("$/T OPC")
 for index, value in enumerate(Y):
     plt.text(index -0.5, value, str(value))
 plt.show(fig2)
-'''
+
         % % % Value
         of
         All
@@ -485,130 +818,255 @@ plt.show()
         % % % % not correct
         for H2 case
 
-fig2 = plt.figure(figsize = (6,5))
-left, bottom, width, height = 0.1, 0.1, 0.8, 0.8
-ax = fig2.add_axes([left, bottom, width, height])
+fig3 = plt.figure(figsize = (6,5))
+rc('font', weight = 'bold')
+DryCapEx = [DryCapExMat[0], 0, 0, 0]
+BrimCapEx = [CapExMat[0] *(not Dry), CapExMat[1] * echem *(not Dry), CapExMat[2] *(not Dry), CapExMat[3] *(not Dry)]
+#ECapEx = [CapExMat[0] + CapExMat[5], CapExMat[4] * ((SMR and Dry) or (echem and (not Dry))), 0, 0]
 
-data = {"Conv. Process Cement":Dry_GHG, "Brimstone Cement":(GHG_Div(0)), 
-"Conv. Alumina":GHG_Div(5), "Brimstone Alimina":GHG_Div(1), "Conv. Iron Oxide":GHG_Div(6), "Brimstone Iron Oxide":GHG_Div(2),
-"Conv. SCM":(np.array([GHG(0), GHG(4) * (not cleanH), GHG(1) * (not cleanE)]), "Value H_2":H2_value, "CapEx per T":(CapExPT), "OpEx pet T":OpExPT} 
+print("---FIGURE 3 CHECKER---")
+print(DryCapEx)
+print(BrimCapEx)
+#print(ECapEx)
+#bars = np.add(DryCapEx, BrimCapEx).tolist()
+
+r = [0, 1, 2, 3]
+
+names = ['DryCapEx', 'BrimCapEx']
+
+barwidth = 1
+
+plt.bar(r, DryCapEx, color = '#b51a0e', edgecolor = 'white', width = barwidth)
+plt.bar(r, BrimCapEx, bottom = DryCapEx, color = '#557f2d', edgecolor = 'white', width = barwidth)
+#plt.bar(r, ECapEx, bottom = bars, color = '#0d26a3', edgecolor = 'white', width = barwidth)
+
+plt.xticks(r, names, fontweight = 'bold')
+plt.xticks(rotation = 45)
+plt.ylabel("CapEx, 1MT OPC Plant (USD)")
+plt.show(fig3)
+ 
+left, bottom, width, height = 0.1, 0.1, 0.8, 0.8
+ax = fig6.add_axes([left, bottom, width, height])
+
+
+        figure(3)
+        key = {'Dry Process CapEx', 'Brimstone CapEx'}#
+        stack = {'Cement + SCM Plant', 'Hydrogen', 'Acid Regeneration', 'Acid Reactor'}#
+        DryCapEx = [DryCapExMat(1), 0, 0, 0]#
+        BrimCapEx = [CapExMat(1) *not (Dry), CapExMat(2) * echem *not (Dry), ...
+                    CapExMat(3) *not (Dry), CapExMat(4) *not (Dry)]#
+        % ECapEx = [CapExMat(1) + CapExMat(6), CapExMat(5) * ((SMR & & Dry) | | (echem & &not (Dry))), 0, 0]#
+        h = bar([DryCapEx#
+        BrimCapEx], 'stacked')#
+        hold
+        on
+        ylabel({'CapEx, 1MT OPC Plant (USD)'})
+        set(gca, 'XTickLabel', key, 'Fontsize', 22, 'XTickLabelRotation', 45)#
+        legend(h, stack)#
+
+
+
+fig6 = plt.figure(figsize = (6,5))
+left, bottom, width, height = 0.1, 0.1, 0.8, 0.8
+ax = fig6.add_axes([left, bottom, width, height])
+#print("DRY_GHG", np.sum(DryGHG))
+#print("GHG[4]", GHG[4])
+#print("(not cleanH)", (not cleanH))
+
+print("")
+print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+print("             Data Visualization Check             ")
+print("Conv. Process Cement: ", np.sum(DryGHG))
+print("Brimstone Cement: ", GHG_Div[0])
+print("Conv. ALumina: ", GHG_Div[5])
+print("Brimstone Alumina: ", GHG_Div[0])
+print("COnv. Iron Oxide: ", GHG_Div[6])
+print("Brimstone Iron Oxide: ", GHG_Div[2])
+print(" COnv. SCM: ", (np.sum(np.array([GHG[0], GHG[4] * (not cleanH), GHG[1] * (not cleanE)])) - np.sum(DryGHG)) * Sell_SCM)
+print(np.array([GHG[0], GHG[4] * (not cleanH), GHG[1] * (not cleanE)]) - np.sum(DryGHG))
+print("Brimstone_SCM: ", GHG[3])
+print("COnv. H_2: ", GHG_Div[7])
+print("Brimstone H_2: ", GHG_Div[4])
+print("")
+#print(sum(CapExPT))
+#print(((CapExPT) + OpExPT - Dry_base))
+#print(cost)
+#print(SCM_value)
+##print(Iron)
+#rint(Al)
+#print(Agg)
+#print(H2_value)
+#print(sum(CapExPT))
+#print(OpExPT)
+print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+#print("SUMMED ARRAY", np.sum(np.array([GHG[0], GHG[4] * (not cleanH), GHG[1] * (not cleanE)])) - np.sum(DryGHG) * Sell_SCM)
+#print("CHECK ARRAY", np.array([GHG[0], GHG[4] * (not cleanH), GHG[1] * (not cleanE)]))
+data = {"Conv. Process Cement":np.sum(DryGHG), "Brimstone Cement":GHG_Div[0], 
+"Conv. Alumina":GHG_Div[5], "Brimstone Alimina":GHG_Div[1], "Conv. Iron Oxide":GHG_Div[6], "Brimstone Iron Oxide":GHG_Div[2], 
+"Conv. SCM":(np.sum(np.array([GHG[0], GHG[4] * (not cleanH), GHG[1] * (not cleanE)])) - np.sum(DryGHG)) * Sell_SCM, 
+"Brimstone_SCM":GHG[3], "Conv. H_2": GHG_Div[7], "Brimstone H_2":GHG_Div[4]}
 
 key = list(data.keys())
 Y = list(data.values())
+print(Y)
+print(key)
 bar = plt.bar(key, Y, width = 0.5)
 plt.xticks(rotation = 45)
-ylabel = ("$/T OPC")
+ylabel = ("TCO_2/T OPC produced")
 for index, value in enumerate(Y):
     plt.text(index -0.5, value, str(value))
-plt.show(fig2)
+plt.show(fig6)
 
-        figure(7)
-        key = {'Conv. Process Cement', 'Brimstone Cement', 'Conv. Alumina', ...
-        'Brimstone Alimina', 'Conv. Iron Oxide', 'Brimstone Iron Oxide', ...
-        'Conv. SCM', 'Brimstone SCM', 'Conv. H_2', 'Brimstone H_2'}#
-        hb = bar([sum(DryGHG), GHG_Div(1), ...
-        GHG_Div(6), GHG_Div(2), GHG_Div(7), GHG_Div(3), (sum([GHG(1), ...
-        GHG(4) * not (cleanH), GHG(2) * not (cleanE)])- sum(DryGHG)) * Sell_SCM, ...
-        GHG_Div(4), GHG_Div(8), GHG_Div(5)])#
-        hold on
-        ylabel({'TCO_2/T OPC produced'})
-        set(gca, 'XTickLabel', key, 'Fontsize', 22, 'XTickLabelRotation', 45)#
+fig4 = plt.figure(figsize = (6, 5))
+rc('font', weight = 'bold')
+left, bottom, width, height = 0.1, 0.1, 0.8, 0.8
+ax = fig4.add_axes([left, bottom, width, height])
+
+DryCapEx = DryOpExMat
+print("---CHECK---")
+print(DryCapEx)
+print(OpExMat)
+
+labels = ['Dry Process OpEx', 'Brimstone OpEx']
+DPOEx = [DryCapEx[0], DryCapEx[1], DryCapEx[2], DryCapEx[3], DryCapEx[4], 
+DryCapEx[5], DryCapEx[6], DryCapEx[7], DryCapEx[8]]
+print("----DOUBLE CHEKC----")
+print(DPOEx)
+BOEx = [ OpExMat[0] * (not Dry),  OpExMat[1] * (not Dry),  OpExMat[2] * (not Dry), 
+OpExMat[3] * (not Dry),  OpExMat[4] * (not Dry),  OpExMat[5] * (not Dry),  OpExMat[6] * (not Dry), OpExMat[7] * (not Dry),  OpExMat[8] * (not Dry)]
+width = 0.35
+
+ax.bar(labels, DPOEx, width, label = 'Dry Process OpEx')
+ax.bar(labels, BOEx, width, label = 'Brimstone OpEx')
+ax.set_ylabel('OpEx/T OPC, 1MTPY OPC Plant (USD)')
+ax.legend()
+plt.show(fig4)
+
+print(DryCapEx[0])
+bars1 = [DryCapEx[0], OpExMat[0] * (not Dry)]
+bars2 = [DryCapEx[1], OpExMat[1] * (not Dry)]
+bars3 = [DryCapEx[2], OpExMat[2] * (not Dry)]
+bars4 = [DryCapEx[3], OpExMat[3] * (not Dry)]
+bars5 = [DryCapEx[4], OpExMat[4] * (not Dry)]
+bars6 = [DryCapEx[5], OpExMat[5] * (not Dry)]
+bars7 = [DryCapEx[6], OpExMat[6] * (not Dry)]
+bars8 = [DryCapEx[7], OpExMat[7] * (not Dry)]
+bars9 = [DryCapEx[8], OpExMat[8] * (not Dry)]
+
+bars = np.add(bars1, bars2).tolist()
+
+r = [0, 1]
+names = ['Dry Process OpEX', 'Brimstone OpEx']
+barWidth = 1
+#stack = {'O&M', 'Mining', 'Heat', 'Electricity', 'CO_2 Tax', 'Water', 'Sulfur'}#
+
+plt.bar(r, bars1, color='#b51a0e', label = 'O&M', edgecolor='black', width=barWidth, bottom = bars2+bars3+bars4+bars5+bars6+bars7+bars8+bars9)
+plt.bar(r, bars2, color='#0d26a3', label = 'Mining', edgecolor='black', width=barWidth, bottom = bars3+bars4+bars5+bars6+bars7+bars8+bars9)
+plt.bar(r, bars3, color='#cf6c11', label = 'Heat', edgecolor='black', width=barWidth, bottom = bars4+bars5+bars6+bars7+bars8+bars9)
+plt.bar(r, bars4, color='#e3a214', label = 'Electricity', edgecolor='black', width=barWidth, bottom = bars5+bars6+bars7+bars8+bars9)
+plt.bar(r, bars5, color='#e3a214', label = 'CO_2 Tax', edgecolor='black', width=barWidth, bottom = bars6+bars7+bars8+bars9)
+plt.bar(r, bars6, color='#53c213', label = 'Water', edgecolor='black', width=barWidth, bottom = bars7+bars8+bars9)
+plt.bar(r, bars7, color='#16c9e0', label = 'Sulfur', edgecolor='black', width=barWidth, bottom = bars8+bars9)
+plt.bar(r, bars8, color='#7f6d5f', edgecolor='black', width=barWidth, bottom = bars9)
+plt.bar(r, bars9, color='#7f6d5f', edgecolor='black', width=barWidth)
+
+plt.xticks(r, names, fontweight = 'bold', rotation = 45)
+plt.ylabel = ("OpEx/T OPC, 1MTPY OPC Plant (USD)")
+plt.legend(loc="upper right")
+plt.show(fig4)
 
 
+  else:
+    t_data = cell(1, len(constants))#
+    for i in range(len(constants):
+      costs = [0, 0]#
+      inputs = constants#
+      inputs[i] = minimum(sens_var[i])
+    [costs[1], _, _, _, _, _, _, _, _, _, _, _, _, _, _] = 
+    cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, 
+    Sell_SCM, Sell_Iron, Sell_Alumina, Sell_Aggregate, cleanH, 
+    cleanE, inputs[0], inputs[1], inputs[2], inputs[3], inputs[4], inputs[5], 
+    inputs[6], inputs[7], inputs[8], inputs[9], inputs[10], 
+    inputs[11], inputs[12], inputs[13], inputs[14], inputs[15], 
+    inputs[16], inputs[17], inputs[18], inputs[19], 
+    inputs[20], inputs[21], inputs[22], inputs[23], inputs[24], 
+    inputs[25], inputs[26], inputs[27], inputs[28], inputs[29], 
+    inputs[30], inputs[31], inputs[32], inputs[33], inputs[34], 
+    inputs[35])
+
+    inputs[i] = maximum(sens_var[i])#
+    [costs[2], _, _, _, _, _, _, _, _, _, _, _, _, _, _] = 
+    cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, 
+    Sell_SCM, Sell_Iron, Sell_Alumina, Sell_Aggregate, cleanH, 
+    cleanE, inputs[0], inputs[1], inputs[2], inputs[3], inputs[4], inputs[5], 
+    inputs[6], inputs[7], inputs[8], inputs[9], inputs[10], 
+    inputs[11], inputs[12], inputs[13], inputs[14], inputs[15], 
+    inputs[16], inputs[17], inputs[18], inputs[19], inputs[20], 
+    inputs[21], inputs[22], inputs[23], inputs[24], 
+    inputs[25], inputs[26], inputs[27], inputs[28], inputs[29], 
+    inputs[30], inputs[31], inputs[32], inputs[33], inputs[34], 
+    inputs[35])#
+    t_data[i] = [costs]#
 
 
+  # Names of the Y-axis ticks 
+  names = np.array['Electrolyzer Cost (USD/kW) 50->1000', 'CO_2 Tax (USD/T CO_2) -190->100', 
+  'H_2 price (USD/kg)1->4', 'Mining Cost (USD/T) 3->10', 'Cost of Heat (USD/GJ) 1->10', 
+  'SCM Sold Per T OPC (T SCM/T OPC) 0.4->5.3', 'Electricity Cost ($/kWhr) 0.01->0.1', 
+  'kWhr per kg H_2 5->30', 'IRR 4%->30%', 'CO_2 Intensity of Heat (T CO_2/GJ) 0->0.2', 
+  'CO_2 Intensity of Electricity (T CO_2/kWhr) 0->0.001', 'Price per T of SCM (USD/T) 0->100', 
+  'Sulfur Cost (USD/T) 0->200', 'Plant Size (T OPC/yr) 1M->5M', 'Co-product Revenue per T OPC 0->500', 
+  'Price per Tonne Fe_2O_3 0->100', 'Price per Tonne Al_2O_3 0->400', 'Price per Tonne Aggregate 0->20', 
+  'Operating Cell Voltage (V) 0.2->1.2', 'Water Content (T/T OPC) 0.1-5', 'Improvement in Current Density (A/cm^2) 0.4-> -0.4', 
+  'Al production efficiency 50%->100%', 'Fe production efficiency 50%->100%', 'SCM production efficiency 50%->100%', 
+  'OPC production efficiency 50%->90%', 'Aggregate production efficiency 50%->100%', 'CapEx multiplier 0.5->2']
 
-else:
-  t_data = cell(1, len(constants))#
-  for i in range(len(constants):
-    costs = [0, 0]#
-    inputs = constants#
-    inputs[i] = minimum(sens_var[i])
-  [costs[1], _, _, _, _, _, _, _, _, _, _, _, _, _, _] = 
+  # ' Fraction CaO in Source Rock', ...
+  # ' Fraction Al_2O_3 in Source Rock', ' Fraction SiO_2 in Source Rock', ...
+  # ' Fraction FeO in Source Rock', 'Freaction Fe_2O_3 in Source Rock', ...
+  # 'Fraction MgO, in Source Rock',
+  # 'Capacity Factor',
+  # 'Conventration of Produced Sulfuric Acid', ...
+  # 'Heat to Power Efficiency',
+
+  vars = [1:9, 16: 19, 21, 24: len(t_data)]#
+  a = 1#
+  high = np.zeros(shape(vars))#
+  low = np.zeros(shape(vars))#
+  for i in vars: 
+    n = t_data[i]#
+    high(a) = maximum(n)#
+    low(a) = minimum(n)#
+    a = a + 1#
+  [base, _, _, _, _, _, _, _, _, _, _, _, _, _, _] = 
   cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, 
-  Sell_SCM, Sell_Iron, Sell_Alumina, Sell_Aggregate, cleanH, 
-  cleanE, inputs[0], inputs[1], inputs[2], inputs[3], inputs[4], inputs[5], 
-  inputs[6], inputs[7], inputs[8], inputs[9], inputs[10], 
-  inputs[11], inputs[12], inputs[13], inputs[14], inputs[15], 
-  inputs[16], inputs[17], inputs[18], inputs[19], 
-  inputs[20], inputs[21], inputs[22], inputs[23], inputs[24], 
-  inputs[25], inputs[26], inputs[27], inputs[28], inputs[29], 
-  inputs[30], inputs[31], inputs[32], inputs[33], inputs[34], 
-  inputs[35])
+  Sell_SCM, Sell_Iron, Sell_Alumina, Sell_Aggregate, cleanH,
+  cleanE, constants[0], constants[1], constants[2], constants[3],
+  constants[4], constants[5], constants[6], constants[7], constants[8],
+  constants[9], constants[10], constants[11], constants[12], 
+  constants[13], constants[14], constants[15], constants[16], 
+  constants[17], constants[18], constants[19], constants[20], 
+  constants[21], constants[22], constants[23], constants[24], 
+  constants[25], constants[26], constants[27], constants[28], 
+  constants[29], constants[30], constants[31], constants[32],
+  constants[33], constants[34], constants[35])#
 
-  inputs[i] = maximum(sens_var[i])#
-  [costs[2], _, _, _, _, _, _, _, _, _, _, _, _, _, _] = 
-  cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, 
-  Sell_SCM, Sell_Iron, Sell_Alumina, Sell_Aggregate, cleanH, 
-  cleanE, inputs[0], inputs[1], inputs[2], inputs[3], inputs[4], inputs[5], 
-  inputs[6], inputs[7], inputs[8], inputs[9], inputs[10], 
-  inputs[11], inputs[12], inputs[13], inputs[14], inputs[15], 
-  inputs[16], inputs[17], inputs[18], inputs[19], inputs[20], 
-  inputs[21], inputs[22], inputs[23], inputs[24], 
-  inputs[25], inputs[26], inputs[27], inputs[28], inputs[29], 
-  inputs[30], inputs[31], inputs[32], inputs[33], inputs[34], 
-  inputs[35])#
-  t_data[i] = [costs]#
+    figure
 
-
- # Names of the Y-axis ticks 
-names = np.array['Electrolyzer Cost (USD/kW) 50->1000', 'CO_2 Tax (USD/T CO_2) -190->100', 
-'H_2 price (USD/kg)1->4', 'Mining Cost (USD/T) 3->10', 'Cost of Heat (USD/GJ) 1->10', 
-'SCM Sold Per T OPC (T SCM/T OPC) 0.4->5.3', 'Electricity Cost ($/kWhr) 0.01->0.1', 
-'kWhr per kg H_2 5->30', 'IRR 4%->30%', 'CO_2 Intensity of Heat (T CO_2/GJ) 0->0.2', 
-'CO_2 Intensity of Electricity (T CO_2/kWhr) 0->0.001', 'Price per T of SCM (USD/T) 0->100', 
-'Sulfur Cost (USD/T) 0->200', 'Plant Size (T OPC/yr) 1M->5M', 'Co-product Revenue per T OPC 0->500', 
-'Price per Tonne Fe_2O_3 0->100', 'Price per Tonne Al_2O_3 0->400', 'Price per Tonne Aggregate 0->20', 
-'Operating Cell Voltage (V) 0.2->1.2', 'Water Content (T/T OPC) 0.1-5', 'Improvement in Current Density (A/cm^2) 0.4-> -0.4', 
-'Al production efficiency 50%->100%', 'Fe production efficiency 50%->100%', 'SCM production efficiency 50%->100%', 
-'OPC production efficiency 50%->90%', 'Aggregate production efficiency 50%->100%', 'CapEx multiplier 0.5->2']
-
-# ' Fraction CaO in Source Rock', ...
-# ' Fraction Al_2O_3 in Source Rock', ' Fraction SiO_2 in Source Rock', ...
-# ' Fraction FeO in Source Rock', 'Freaction Fe_2O_3 in Source Rock', ...
-# 'Fraction MgO, in Source Rock',
-# 'Capacity Factor',
-# 'Conventration of Produced Sulfuric Acid', ...
-# 'Heat to Power Efficiency',
-
-vars = [1:9, 16: 19, 21, 24: len(t_data)]#
-a = 1#
-high = np.zeros(shape(vars))#
-low = np.zeros(shape(vars))#
-for i in vars: 
-  n = t_data[i]#
-  high(a) = maximum(n)#
-  low(a) = minimum(n)#
-  a = a + 1#
-[base, _, _, _, _, _, _, _, _, _, _, _, _, _, _] = 
-cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, 
-Sell_SCM, Sell_Iron, Sell_Alumina, Sell_Aggregate, cleanH,
-cleanE, constants[0], constants[1], constants[2], constants[3],
-constants[4], constants[5], constants[6], constants[7], constants[8],
-constants[9], constants[10], constants[11], constants[12], 
-constants[13], constants[14], constants[15], constants[16], 
-constants[17], constants[18], constants[19], constants[20], 
-constants[21], constants[22], constants[23], constants[24], 
-constants[25], constants[26], constants[27], constants[28], 
-constants[29], constants[30], constants[31], constants[32],
-constants[33], constants[34], constants[35])#
-
-  figure
-
-  [high_sort, high_I] = sort(high, 'ascend')#
-  low_sort = low(high_I)#
-  names_sort = names(high_I)#
-  h = barh(high_sort)#
-  hold
-  on
-  barh(low_sort, 'r')
-  bh = get(h, 'BaseLine')#
-  set(bh, 'BaseValue', base)#
-  set(gca, 'yticklabel', names_sort)
-  set(gca, 'Ytick', [1: length(names)], 'YTickLabel', [1: length(names)])
-  set(gca, 'yticklabel', names_sort)
-  xlabel('$USD/T OPC')
-  hold
-  on
-  end
-'''
+    [high_sort, high_I] = sort(high, 'ascend')#
+    low_sort = low(high_I)#
+    names_sort = names(high_I)#
+    h = barh(high_sort)#
+    hold
+    on
+    barh(low_sort, 'r')
+    bh = get(h, 'BaseLine')#
+    set(bh, 'BaseValue', base)#
+    set(gca, 'yticklabel', names_sort)
+    set(gca, 'Ytick', [1: length(names)], 'YTickLabel', [1: length(names)])
+    set(gca, 'yticklabel', names_sort)
+    xlabel('$USD/T OPC')
+    hold
+    on
+    end
+  '''

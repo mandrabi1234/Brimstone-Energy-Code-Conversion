@@ -520,6 +520,40 @@ def cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, Sell_SCM, Sell_Iron,
           (not Dry) + CO2int * QNormal * Dry + HPT * SMR * 10 / 1000 * Dry
 
     # create input variables
+    '''
+    [mass_CO2+HPT*10/1000*((SMR&&Dry)||(echem&&not(Dry)))*.5, ...
+    (ePT)*eCO2int, (ePT + eH2*echem)*eCO2int*not(Dry), ...
+    CO2int*(QNormal+QClay_norm) + ...
+    HPT*10/1000*((SMR&&Dry)||(echem&&not(Dry)))*.5, ...
+    CO2int*QBrimstone*not(Dry)]; 
+    '''
+    print("")
+    print("-----------------GHG CHECK-----------------")
+    print("mass_CO2", mass_CO2)
+    print("HPT", HPT)
+    print("SMR", SMR)
+    print("Dry", Dry)
+    print("echem", echem)
+    print("ePT", ePT)
+    print("eCO2int", eCO2int)
+    print("eH2", eH2)
+    print("QNormal", QNormal)
+    print("QClay_norm", QClay_norm)
+    print("QBrimstone", QBrimstone)
+    print("not Dry", (not Dry))
+    print("GHG[0]", mass_CO2 + HPT * 10 / 1000 * ((SMR and Dry) or (echem and (not Dry))) * .5)
+    print("GHG[1]", (ePT) * eCO2int)
+    print("-------------------------------------------")
+    print("")
+
+   # GHG = np.array([
+    #    mass_CO2 + HPT * 10 / 1000 ((SMR and Dry) or (echem and (not Dry))) * 0.5, 
+    #    (ePT) * eCO2int, 
+    #    (ePT + eH2 * echem) * eCO2int * (not Dry), 
+    #    CO2int * (QNormal + QClay_norm) + HPT * 10 / 1000 * ((SMR and Dry) or (echem and (not Dry))) * 0.5, 
+    #    CO2int * QBrimstone * (not Dry)])
+
+
     GHG = np.array([
         mass_CO2 + HPT * 10 / 1000 * ((SMR and Dry) or (echem and (not Dry))) * .5, # 1.
                  (ePT) * eCO2int, # 2.
