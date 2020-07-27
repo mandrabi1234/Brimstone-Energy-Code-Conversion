@@ -120,11 +120,11 @@ sens_var, constants, SENS = Def_anal(switches, Skarn, Ave_basalt, tornado)
 
 #sens_var = np.array(sens_var)
 #sens_var = sens_var.astype(int)
-print(sens_var)
-print(sens_var[6], len(SENS[6]))
+#print(sens_var)
+#print(sens_var[6], len(SENS[6]))
 if tornado == 0:
   for i in range(len(sens_var) - 2):
-    print(sens_var[i])
+    #print(sens_var[i])
 
     if ((indexx == -1) and (indexy == -1) and ((len(SENS[i])) > 1)):
       x = sens_var[i] # defines the variable
@@ -132,23 +132,23 @@ if tornado == 0:
       sens_var[i] = -1 # replaces variable with -1            
     elif ((indexy == -1) and ((len(SENS[i])) > 1)):
       y = sens_var[i]
-      print("--Y--", y)
+      #print("--Y--", y)
       indexy = i
       sens_var[i] = -1              
       break
 
-  print('X',x)
-  print('Y', y)
+  #print('X',x)
+  #print('Y', y)
   length_x = len(x)
   length_y = len(y)
   
-  #print("Length Check")
-  #print(length_x)
-  #print(length_y)
+  ##print("Length Check")
+  ##print(length_x)
+  ##print(length_y)
 
 
   z = np.zeros((length_y, length_x))
-  #print("Z-length", z)
+  #print("Z-length", len(z))
   z_CO2 = np.zeros((length_y, length_x))
   z_en = np.zeros((length_y, length_x))
   zz = np.zeros((length_y, length_x)) # number of components in system
@@ -161,22 +161,22 @@ if tornado == 0:
   # run the plant code in a loop, updating the value of the variables (x and y) 
   # to be compared every time
   
-  print("IndexX", indexx)
-  print("IndexY", indexy)
+  #print("IndexX", indexx)
+  #print("IndexY", indexy)
   a = 1 # indexes
   for i  in x: #THIS MIGHT BE WRONG (CHECK WITH A TEST RUN)
     b = 1 # % indexes
     for j in (y): #THIS MIGHT BE WRONG (CHECK WITH A TEST RUN)
       inputs = (sens_var) # inputs = cell2mat(sens_var) # 
-      print("SENS_VAR")
-      print(sens_var)
-      print("")
-      print("INPUTS")
-      print(len(inputs))
-      print(inputs)
-      print(inputs[0])
-      print(inputs[3])
-      print("")
+      #print("SENS_VAR")
+      #print(sens_var)
+      #print("")
+      #print("INPUTS")
+      #print(len(inputs))
+      #print(inputs)
+      #print(inputs[0])
+      #print(inputs[3])
+      #print("")
       inputs[indexx] = i # % update the proper input with the next value
       inputs[indexy]= j # % update the proper input with the next value
 
@@ -193,6 +193,14 @@ if tornado == 0:
 #------------------------------
 # CHECK CONVERSION: GO OVER THIS CODE SNIPPET WITH CODY
       z[b, a] = cost #z(b, a) = cost # the cost H2 array
+      print("----COST CHECKER----")
+      print(cost)
+      print("--------------------")
+      print("----Z-VALUES CHECKER----")
+      print(z[b,a])
+      print("---------------------")
+      print(z)
+      
       np.nan_to_num(z) # z(isnan(z)) = 0 (replace all NaN values with 0)
       # z_CO2(b, a) = CO2 # the CO2 production array
       # z_en(b, a) = Energy_needed; #the energy use array
@@ -205,13 +213,13 @@ if tornado == 0:
   
 # find Base Case
 # update the proper input with the next value
-  print("CONSTANTS", constants)
+  ##print("CONSTANTS", constants)
 
   inputs[indexx] = sens_var[len(sens_var) - 2] # update the proper input with the next value
         
   inputs[indexy] = sens_var[len(sens_var)-1]
-  print(inputs[indexy])
-  print(inputs[indexx]) #
+  #print(inputs[indexy])
+  #print(inputs[indexx]) #
   [cost, SCM_value, H2_value, CapExPT, OpExPT, Iron, QDry, QBrim, QH2, 
   CapExMat, GHG, OpExMat, Al, Agg, GHG_Div] = cem_plant(SMR, CC, chemical, Dry,
   echem, retro, burnH2, Sell_SCM, Sell_Iron, Sell_Alumina, Sell_Aggregate, cleanH,
@@ -240,7 +248,8 @@ if tornado == 0:
   constants[16], constants[17], constants[18], constants[19], constants[20],
   constants[21], constants[22], constants[23], constants[24], constants[25], 
   constants[26], constants[27], constants[28], constants[29], constants[30], constants[31], constants[32], constants[33], constants[34], constants[35])
-
+  print("---ZEEEEEEEEEEEEEEEEEEEE--")
+  print(z)
   zlabel = 'Levelized Cost of Cement/T'
   # log the cost if necessary, unless there are negative values
   if log_plot == 1 and (np.sum(np.sum(abs(z))) <= np.sum(np.sum(z))):
@@ -250,18 +259,20 @@ if tornado == 0:
 #------------------------------------------------------------------------------------------------------------------------------------------
 #----------------------------------------------------------UNFINISHED CODE-----------------------------------------------------------------
 #------------------------------------------------------------------------------------------------------------------------------------------
-
+# CHECK ON Z Variable
   #------Figure 1------
-  fig1 = plt.figure(figsize = (6,5))
-  left, bottom, width, height = 0.1, 0.1, 0.8, 0.8
-  ax = fig1.add_axes([left, bottom, width, height])
+  fig1 = plt.figure()
+  #left, bottom, width, height = 0.1, 0.1, 0.8, 0.8
+  #ax = fig1.add_axes([left, bottom, width, height])
 
   cp = plt.contourf(x, y, z)
+  #print("--Z CHECK--", z)
   plt.colorbar(cp)
 
-  ax.set_title('Contour Plot')
-  ax.set_xlabel('x (cm')
-  ax.set_ylabel('y (cm)')
+  
+  #ax.set_title('Contour Plot')
+  #ax.set_xlabel('x (cm')
+  #ax.set_ylabel('y (cm)')
   plt.show(fig1)
 
   #------Figure 2------
@@ -290,9 +301,9 @@ if tornado == 0:
   DryCapEx = np.array([DryCapExMat[0], 0, 0, 0])
   BrimCapEx = np.array([CapExMat[0] *(not Dry), CapExMat[1] * echem *(not Dry), CapExMat[2] *(not Dry), CapExMat[3] *(not Dry)])
 
-  print("---FIGURE 3 CHECKER---")
-  print(DryCapEx)
-  print(BrimCapEx)
+  #print("---FIGURE 3 CHECKER---")
+  #print(DryCapEx)
+  #print(BrimCapEx)
 
   bars1 = [DryCapEx[0], BrimCapEx[0]]
   bars2 = [DryCapEx[1], BrimCapEx[1]]
@@ -422,8 +433,8 @@ if tornado == 0:
 
   key = list(data.keys())
   Y = list(data.values())
-  print(Y)
-  print(key)
+  #print(Y)
+  #print(key)
   bar = plt.bar(key, Y, width = 0.5)
   plt.xticks(rotation = 45)
   ylabel = ("TCO_2/T OPC produced")
@@ -436,15 +447,15 @@ if tornado == 0:
 
 #  t_data = np.arange(1, len(constants)+1, 1)
 #  t_data = [[i] for i in t_data]
-#  print("LENGTH CEHCKER")
-#  print(len(constants))
-#  print(len(t_data))
+#  #print("LENGTH CEHCKER")
+#  #print(len(constants))
+#  #print(len(t_data))
 #  for i in range(len(constants)):
 #    costs = np.array([109.4230, 109.4230])
 #t_data = [[i] for i in t_data]
 
 #    t_data[i] = costs
-#    print("--YELLOOOOOOOOO--", t_data)
+#    #print("--YELLOOOOOOOOO--", t_data)
 #  vars = np.array([ 1,  2,  3,  4,  5,  6,  7,  8,  9, 16, 17, 18, 19, 21, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33,
 # 34, 35, 36])
 #  a = 1#
@@ -461,10 +472,10 @@ else:
     t_data = [[i] for i in t_data]
     for i in range(len(constants)):
       costs = np.array([0, 0])
-      print(costs)
+      #print(costs)
       inputs = constants
-      print("Constants ************************************************************************")
-      print(constants)
+      #print("Constants ************************************************************************")
+      #print(constants)
       inputs[i] = (sens_var[i])
       [costs[0], _, _, _, _, _, _, _, _, _, _, _, _, _, _] = cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, 
       Sell_SCM, Sell_Iron, Sell_Alumina, Sell_Aggregate, cleanH, 
@@ -514,8 +525,8 @@ else:
     var3 = np.array([21])
     var4 = np.arange(24, len(t_data) + 1, 1)
     vars = np.hstack((var1, var2, var3, var4))
-    print("----VARS----")
-    print(vars)
+    #print("----VARS----")
+    #print(vars)
     #[1:9, 16: 19, 21, 24: len(t_data)]#
     
     a = 1#
@@ -541,7 +552,18 @@ else:
 #--- FINAL FIGURE ---
     fig8 = plt.figure(figsize = (6,5))
     rc('font', weight = 'bold')
-    
+    high_sort = np.sort(high)
+    high_I = np.argsort(high)
+   # for i in high_I:
+   #       low_sort = low[i]
+   #       names_sort = names[i]
+
+    low_sort = low[high_I]
+    names_sort = names[high_I]
+
+    plt.xlabel("$USD/T OPC")
+    plt.legend()
+    plt.show(fig8)
     '''
   figure
 
