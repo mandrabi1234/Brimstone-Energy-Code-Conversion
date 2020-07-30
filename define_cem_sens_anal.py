@@ -93,8 +93,7 @@ def Def_anal(switches, Skarn, Ave_basalt, tornado):
 
     input_a = constants*switches
     sensitiv_anal_vect = input_a
-#############################################################################################
-    # CHECK: translation is correct
+
     # Python Syntax: np.arange(start, stop, step)
     #                   vs
     # MATLAB Syntax: start: step: stop
@@ -109,7 +108,6 @@ def Def_anal(switches, Skarn, Ave_basalt, tornado):
     kWhr_kg = np.arange(5, 31, 1) # 5:1: 30
     r = np.arange(0.04, 0.31, 0.01) #0.04:0.01: 0.3
 
-##################################################################
 
     CaO_Frac_Rock = np.arange(0.05, 0.41, 0.01) # 0.05:0.01: 0.4
     Al2O3_Frac_Rock = np.arange(0.05, 0.41, 0.01) # 0.05:0.01: 0.4
@@ -118,7 +116,6 @@ def Def_anal(switches, Skarn, Ave_basalt, tornado):
     Fe2O3_Frac_Rock = np.arange(0.05, 0.41, 0.01) # 0.05:0.01: 0.4
     MgO_Frac_Rock = np.arange(0.05, 0.41, 0.01) # 0.05:0.01: 0.4
 
-    #QUESTION: is the division and scientific notation out of convenience? or can I just write 0.2, 0.005, 0.001, 0.0001 etc.
     CO2int = np.arange(0, ((200/1000) + 0.005), (5/1000)) # 0:(5 / 1000): (200 / 1000);
     eCO2int = np.arange(0, 10e-04, 1e-04) # 0:0.1e-04: 10e-04;
     S_Cost = np.arange(0, 210, 10) # 0:10: 200;
@@ -150,37 +147,30 @@ def Def_anal(switches, Skarn, Ave_basalt, tornado):
  
 
     
-###################################################
-#CONVERSION CHECK: GO THROUGH THIS CODE AGAIN
 # put the arrays that are to be compared into the sensitive_anal_vec
     sens_analysis = [[i] for i in sensitiv_anal_vect]
     sensitiv_anal_vect = [i for i in sensitiv_anal_vect]
     check = sensitiv_anal_vect[0]
-    #print(check)
-    #print(check[0])
 
-    #print("Before Line 158", sensitiv_anal_vect[0])
+
+
     for i in range(len(sensitiv_anal_vect)):
 
-        #print(sensitiv_anal_vect)
 
-        #print("--CHECK--",sensitiv_anal_vect)
+
+
         if sensitiv_anal_vect[i] == 0:
 
     # add the standard values of the array to be compared to the end of the cell
             sensitiv_anal_vect = np.append(sensitiv_anal_vect, constants[i])
-            #print(sensitiv_anal_vect)
 
-           # sens_analysis = [[i] for i in sensitiv_anal_vect]
+
             sensitiv_anal_vect = [i for i in sensitiv_anal_vect]
-            #print("--Sensitivity Check--")
 
-            #print(sensitiv_anal_vect)
-            #print(sens_analysis)
+
             sensitiv_anal_vect[i] = variables[i]
             sens_analysis[i] = variables[i]
-            #print(sensitiv_anal_vect)
-            #print("--SENS_ANALYSIS--", sens_analysis)
+
 
 
 
@@ -188,4 +178,3 @@ def Def_anal(switches, Skarn, Ave_basalt, tornado):
         sensitiv_anal_vect = variables
 
     return sensitiv_anal_vect, constants, sens_analysis
-###################################################

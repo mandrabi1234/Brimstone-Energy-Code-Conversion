@@ -105,52 +105,32 @@ indexy = -1
 # for each variable and constant, two variables are compared at a time
 # while everything is kept constant
 sens_var, constants, SENS = Def_anal(switches, Skarn, Ave_basalt, tornado)
-#print("--6IX9INE--")
-#print(sens_var)
-#print(SENS)
-#SENS[3] = sens_var[3]
-#print(len(SENS[3]))
-#sens_var = np.asarray(sens_var)
-#print(constants)
+
 
 # find the index of the variables to compare in the sens_var cell array
 # last 2 values are the constants that would be used if the variables
 # selected were not variables, and therefore can be ignored
 
 
-#sens_var = np.array(sens_var)
-#sens_var = sens_var.astype(int)
-#print(sens_var)
-#print(sens_var[6], len(SENS[6]))
 print(len(sens_var)-2)
 if tornado == 0:
   for i in range(len(sens_var) - 2):
-    #print(sens_var[i])
-    #print("--HELLOOOO--")
-  #  print(len(SENS[i]))
     if ((indexx == -1) and (indexy == -1) and ((len(SENS[i])) > 1)):
       x = sens_var[i] # defines the variable
       indexx = i      
       sens_var[i] = -1 # replaces variable with -1            
     elif ((indexy == -1) and ((len(SENS[i])) > 1)):
       y = sens_var[i]
-      #print("--Y--", y)
       indexy = i
       sens_var[i] = -1              
       break
 
-  #print('X',x)
-  #print('Y', y)
   length_x = len(x)
   length_y = len(y)
   
-  ##print("Length Check")
-  ##print(length_x)
-  ##print(length_y)
 
 
   z = np.zeros((length_y, length_x))
-  #print("Z-length", len(z))
   z_CO2 = np.zeros((length_y, length_x))
   z_en = np.zeros((length_y, length_x))
   zz = np.zeros((length_y, length_x)) # number of components in system
@@ -174,19 +154,10 @@ if tornado == 0:
     print("b: ", b)
     for j in y: #THIS MIGHT BE WRONG (CHECK WITH A TEST RUN)
       inputs = (sens_var) # inputs = cell2mat(sens_var) # 
-      #print("SENS_VAR")
-      #print(sens_var)
-      #print("")
-      #print("INPUTS")
-      #print(len(inputs))
-     # print(inputs)
-    #  print(inputs[0])
-    #  print(inputs[1])
-    #  print(sens_var[1])
-    #  print(inputs[3])
-      #print("")
+
       inputs[indexx] = i # % update the proper input with the next value
       inputs[indexy]= j # % update the proper input with the next value
+
       print("INPUTS1: ", inputs[indexx])
       print("INPUTS2: ", inputs[indexy])
       [cost, _, _, _, _, _, _, _, _, _, _, _, _, _, _] = cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, 
@@ -202,9 +173,6 @@ if tornado == 0:
 #------------------------------
 # CHECK CONVERSION: GO OVER THIS CODE SNIPPET WITH CODY
       z[b, a] = cost #z(b, a) = cost # the cost H2 array
-      #print("----COST CHECKER----")
-      #print(cost)
-      #print("--------------------")
       print("----Z-VALUES CHECKER----")
       print("b: ", b)
       print("a: ", a)
@@ -224,13 +192,11 @@ if tornado == 0:
   
 # find Base Case
 # update the proper input with the next value
-  ##print("CONSTANTS", constants)
 
   inputs[indexx] = sens_var[len(sens_var) - 2] # update the proper input with the next value
         
   inputs[indexy] = sens_var[len(sens_var)-1]
-  #print(inputs[indexy])
-  #print(inputs[indexx]) #
+
   [cost, SCM_value, H2_value, CapExPT, OpExPT, Iron, QDry, QBrim, QH2, 
   CapExMat, GHG, OpExMat, Al, Agg, GHG_Div] = cem_plant(SMR, CC, chemical, Dry,
   echem, retro, burnH2, Sell_SCM, Sell_Iron, Sell_Alumina, Sell_Aggregate, cleanH,
@@ -259,8 +225,7 @@ if tornado == 0:
   constants[16], constants[17], constants[18], constants[19], constants[20],
   constants[21], constants[22], constants[23], constants[24], constants[25], 
   constants[26], constants[27], constants[28], constants[29], constants[30], constants[31], constants[32], constants[33], constants[34], constants[35])
-  #print("---ZEEEEEEEEEEEEEEEEEEEE--")
-  #print(z)
+
   zlabel = 'Levelized Cost of Cement/T'
   # log the cost if necessary, unless there are negative values
   if log_plot == 1 and (np.sum(np.sum(abs(z))) <= np.sum(np.sum(z))):
@@ -268,23 +233,21 @@ if tornado == 0:
     zlabel = 'log cost per kg of hydrogen'#
 
 #------------------------------------------------------------------------------------------------------------------------------------------
-#----------------------------------------------------------UNFINISHED CODE-----------------------------------------------------------------
+#----------------------------------------------------------DATA VISUALIZATIONS-----------------------------------------------------------------
 #------------------------------------------------------------------------------------------------------------------------------------------
 
-# CHECK ON Z Variable
   #------Figure 1------
   fig1 = plt.figure()
   #left, bottom, width, height = 0.1, 0.1, 0.8, 0.8
   #ax = fig1.add_axes([left, bottom, width, height])
 
   cp = plt.contourf(x, y, z)
-  #print("--Z CHECK--", z)
   plt.colorbar(cp)
 
   
   #ax.set_title('Contour Plot')
-  #ax.set_xlabel('x (cm')
-  #ax.set_ylabel('y (cm)')
+  plt.xlabel('Mining Cost (USD/T)')
+  plt.ylabel('Electricity Cost ($/kWhr)')
   plt.show(fig1)
 
   #------Figure 2------
@@ -313,27 +276,22 @@ if tornado == 0:
   DryCapEx = np.array([DryCapExMat[0], 0, 0, 0])
   BrimCapEx = np.array([CapExMat[0] *(not Dry), CapExMat[1] * echem *(not Dry), CapExMat[2] *(not Dry), CapExMat[3] *(not Dry)])
 
-  #print("---FIGURE 3 CHECKER---")
-  #print(DryCapEx)
-  #print(BrimCapEx)
 
   bars1 = [DryCapEx[0], BrimCapEx[0]]
   bars2 = [DryCapEx[1], BrimCapEx[1]]
   bars3 = [DryCapEx[2], BrimCapEx[2]]
   bars4 = [DryCapEx[3], BrimCapEx[3]]
-
   #bars = np.add(bars1, bars2, bars3).tolist()
-
   r = [0, 1]
 
   names = ['DryCapEx', 'BrimCapEx']
 
   barwidth = 0.5
 
-  plt.bar(r, bars1, label = 'Cement + SCM Plant', color = '#b51a0e', edgecolor = 'black', width = barwidth)
-  plt.bar(r, bars2, label = 'Hyrogen', bottom = bars1, color = '#557f2d', edgecolor = 'black', width = barwidth)
-  plt.bar(r, bars3, label = 'Acid Regeneration', bottom = bars2, color = 'yellow', edgecolor = 'black', width = barwidth)
-  plt.bar(r, bars4, label = 'Acid Reactor', bottom = bars3, color = 'blue', edgecolor = 'black', width = barwidth)
+  plt.bar(r, bars1, label = 'Cement + SCM Plant', color = '#b5ffb9', edgecolor = 'white', width = barwidth)
+  plt.bar(r, bars2, label = 'Hyrogen', bottom = bars1, color = '#557f2d', edgecolor = 'white', width = barwidth)
+  plt.bar(r, bars3, label = 'Acid Regeneration', bottom = bars2, color = '#f9bc86', edgecolor = 'white', width = barwidth)
+  plt.bar(r, bars4, label = 'Acid Reactor', bottom = bars3, color = '#a3acff', edgecolor = 'white', width = barwidth)
 
 
   plt.xticks(r, names, fontweight = 'bold')
@@ -359,9 +317,9 @@ if tornado == 0:
   names = ['Dry Process Heat', 'Equivalent OPC + SCM + Fe_2O_3 + Al_2_O_3 + H_2 Heat', 'Brimstone Process Heat', 'H_2 Combustion Heat']
   barWidth = 0.5
 
-  plt.bar(r, bars1, color = '#fa9f20', edgecolor = 'black', width = barWidth, label = 'Net Reaction Heat')
-  plt.bar(r, bars2, bottom = bars1, color = '#f7d723', edgecolor = 'black', width = barWidth, label = 'Net Sensible Heat')
-  plt.bar(r, bars3, bottom = bars, color = '#b023f7', edgecolor = 'black', width = barWidth, label = 'Net Laten Heat')
+  plt.bar(r, bars1, color = '#b5ffb9', edgecolor = 'white', width = barWidth, label = 'Net Reaction Heat')
+  plt.bar(r, bars2, bottom = bars1, color = '#f9bc86', edgecolor = 'white', width = barWidth, label = 'Net Sensible Heat')
+  plt.bar(r, bars3, bottom = bars, color = '#a3acff', edgecolor = 'white', width = barWidth, label = 'Net Latent Heat')
 
   plt.xticks(r, names, fontweight = 'bold', rotation = 45)
   plt.ylabel("Heat Energy (GJ/T OPC)")
@@ -387,9 +345,9 @@ if tornado == 0:
   names = ['Dry Process', 'Brimstone Total', 'Equivalent OPC + SCM + Fe_2O_3 + Al_2_O_3 + H_2']
   barWidth = 0.5
 
-  plt.bar(r, bars1, color = '#fa9f20', edgecolor = 'black', width = barWidth, label = 'Process')
-  plt.bar(r, bars2, bottom = bars1, color = '#f7d723', edgecolor = 'black', width = barWidth, label = 'Heat')
-  plt.bar(r, bars3, bottom = bars, color = '#b023f7', edgecolor = 'black', width = barWidth, label = 'Electricity')
+  plt.bar(r, bars1, color = '#b5ffb9', edgecolor = 'white', width = barWidth, label = 'Process')
+  plt.bar(r, bars2, bottom = bars1, color = '#f9bc86', edgecolor = 'white', width = barWidth, label = 'Heat')
+  plt.bar(r, bars3, bottom = bars, color = '#a3acff', edgecolor = 'white', width = barWidth, label = 'Electricity')
 
   plt.xticks(r, names, fontweight = 'bold', rotation = 45)
   plt.ylabel("CO_2 Intensity (T CO_2/TOPC)")
@@ -398,36 +356,48 @@ if tornado == 0:
 
   #------Figure 6------
   # NOTE: Discuss graph output and labeling with Cody via Google Meets
-  fig6 = plt.figure(figsize = (6,5))
+  fig6 = plt.figure()
   rc('font', weight = 'bold')
 
   DryCapEx = DryOpExMat
   BrimCapEx = np.array([OpExMat[0] * (not Dry), OpExMat[1] * (not Dry),OpExMat[2] * (not Dry), OpExMat[3] * (not Dry), OpExMat[4] * (not Dry), OpExMat[5] * (not Dry), OpExMat[6] * (not Dry), OpExMat[7] * (not Dry), OpExMat[8] * (not Dry)])
 
   bars1 = [DryCapEx[0], BrimCapEx[0]]
+  
   bars2 = [DryCapEx[1], BrimCapEx[1]]
   bars3 = [DryCapEx[2], BrimCapEx[2]]
   bars4 = [DryCapEx[3], BrimCapEx[3]]
-  bars5 = [DryCapEx[4], BrimCapEx[4]]
+  bars5 = [0,0]
   bars6 = [DryCapEx[5], BrimCapEx[5]]
   bars7 = [DryCapEx[6], BrimCapEx[6]]
   bars8 = [DryCapEx[7], BrimCapEx[7]]
   bars9 = [DryCapEx[8], BrimCapEx[8]]
-  #bars = np.add(bars1, bars2, bars3, bars4, bars5, bars6, bars7, bars8, bars9).tolist()
+  #bars = np.add(bars1, bars2, bars3, bars4, bars5, bars6, bars7, bars8).tolist()
+  #print("bars: ", bars)
+
+  print("bars1: ", bars1)
+  print("bars2: ", bars2)
+  print("bars3: ", bars3)
+  print("bars4: ", bars4)
+  print("bars5: ", bars5)
+  print("bars6: ", bars6)
+  print("bars7: ", bars7)
+  print("bars8: ", bars8)
+  print("bars9: ", bars9)
 
   r = [0, 1]
   names = ['Dry Process OpEX', 'Brimstone OpEx']
   barWidth = 0.65
 
-  plt.bar(r, bars1, color='#b51a0e', label = 'O&M', edgecolor='black', width=barWidth)
-  plt.bar(r, bars2, bottom = bars1, color='#0d26a3', label = 'Mining', edgecolor='black', width=barWidth)
-  plt.bar(r, bars3, bottom = bars2, color='#cf6c11', label = 'Heat', edgecolor='black', width=barWidth)
-  plt.bar(r, bars4, bottom = bars3, color='#7f03fc', label = 'Electricity', edgecolor='black', width=barWidth)
-  plt.bar(r, bars5, bottom = bars4, color='#e3a214', label = 'CO_2 Tax', edgecolor='black', width=barWidth)
-  plt.bar(r, bars6, bottom = bars5, color='#53c213', label = 'Water', edgecolor='black', width=barWidth)
-  plt.bar(r, bars7, bottom = bars6, color='#16c9e0', label = 'Sulfur', edgecolor='black', width=barWidth )
-  plt.bar(r, bars8, bottom = bars7, color='yellow', edgecolor='black', width=barWidth)
-  plt.bar(r, bars9, bottom = bars8, color='black', edgecolor='black', width=barWidth)
+  plt.bar(r, bars1, color='red', label = 'O&M', edgecolor='white', width=barWidth)
+  plt.bar(r, bars2, bottom = bars1, color='green', label = 'Mining', edgecolor='white', width=barWidth)
+  plt.bar(r, bars3, bottom = bars2, color='blue', label = 'Heat', edgecolor='white', width=barWidth)
+  plt.bar(r, bars4, bottom = bars3, color='yellow', label = 'Electricity', edgecolor='white', width=barWidth)
+  plt.bar(r, bars5, bottom = bars4, color='orange', label = 'CO_2 Tax', edgecolor='white', width=barWidth)
+  plt.bar(r, bars6, bottom = bars5, color='purple', label = 'Water', edgecolor='white', width=barWidth)
+  plt.bar(r, bars7, bottom = bars6, color='teal', label = 'Sulfur', edgecolor='white', width=barWidth )
+  plt.bar(r, bars8, bottom = bars7, color='pink', edgecolor='white', width=barWidth)
+  plt.bar(r, bars9, bottom = bars8, color='grey', edgecolor='white', width=barWidth)
 
   plt.xticks(r, names, fontweight = 'bold', rotation = 45)
   plt.ylabel = ("OpEx/T OPC, 1MTPY OPC Plant (USD)")
@@ -445,8 +415,7 @@ if tornado == 0:
 
   key = list(data.keys())
   Y = list(data.values())
-  #print(Y)
-  #print(key)
+
   bar = plt.bar(key, Y, width = 0.5)
   plt.xticks(rotation = 45)
   ylabel = ("TCO_2/T OPC produced")
@@ -457,37 +426,14 @@ if tornado == 0:
   plt.show(fig7)
 
 
-#  t_data = np.arange(1, len(constants)+1, 1)
-#  t_data = [[i] for i in t_data]
-#  #print("LENGTH CEHCKER")
-#  #print(len(constants))
-#  #print(len(t_data))
-#  for i in range(len(constants)):
-#    costs = np.array([109.4230, 109.4230])
-#t_data = [[i] for i in t_data]
-
-#    t_data[i] = costs
-#    #print("--YELLOOOOOOOOO--", t_data)
-#  vars = np.array([ 1,  2,  3,  4,  5,  6,  7,  8,  9, 16, 17, 18, 19, 21, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33,
-# 34, 35, 36])
-#  a = 1#
-#  high = np.zeros(vars.shape)#
-#  low = np.zeros(vars.shape)#
-#  for i in vars: 
-#    n = t_data[i]#
-#    high[a] = np.maximum(n)#
-#    low[a] = np.minimum(n)#
-
 #--Continue If-Else Statement (if tornado == 0)--
 else:
     t_data = np.arange(1, len(constants)+1, 1)
     t_data = [[i] for i in t_data]
     for i in range(len(constants)):
       costs = np.array([0, 0])
-      #print(costs)
       inputs = constants
-      #print("Constants ************************************************************************")
-      #print(constants)
+      
       inputs[i] = (sens_var[i])
       [costs[0], _, _, _, _, _, _, _, _, _, _, _, _, _, _] = cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, 
       Sell_SCM, Sell_Iron, Sell_Alumina, Sell_Aggregate, cleanH, 
@@ -537,9 +483,7 @@ else:
     var3 = np.array([21])
     var4 = np.arange(24, len(t_data) + 1, 1)
     vars = np.hstack((var1, var2, var3, var4))
-    #print("----VARS----")
-    #print(vars)
-    #[1:9, 16: 19, 21, 24: len(t_data)]#
+
     
     a = 1#
     high = np.zeros(vars.shape)#
@@ -598,22 +542,3 @@ else:
     plt.xlabel("$USD/T OPC")
     plt.legend()
     plt.show(fig8)
-'''  
-  figure
-
-    [high_sort, high_I] = sort(high, 'ascend')#
-    low_sort = low(high_I)#
-    names_sort = names(high_I)#
-    h = barh(high_sort)#
-    hold
-    on
-    barh(low_sort, 'r')
-    bh = get(h, 'BaseLine')#
-    set(bh, 'BaseValue', base)#
-    set(gca, 'yticklabel', names_sort)
-    set(gca, 'Ytick', [1: length(names)], 'YTickLabel', [1: length(names)])
-    set(gca, 'yticklabel', names_sort)
-    xlabel('$USD/T OPC')
-    hold
-    on
-    '''
