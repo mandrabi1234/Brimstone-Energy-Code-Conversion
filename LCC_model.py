@@ -122,13 +122,15 @@ sens_var, constants, SENS = Def_anal(switches, Skarn, Ave_basalt, tornado)
 #sens_var = sens_var.astype(int)
 #print(sens_var)
 #print(sens_var[6], len(SENS[6]))
+print(len(sens_var)-2)
 if tornado == 0:
   for i in range(len(sens_var) - 2):
     #print(sens_var[i])
-
+    #print("--HELLOOOO--")
+  #  print(len(SENS[i]))
     if ((indexx == -1) and (indexy == -1) and ((len(SENS[i])) > 1)):
       x = sens_var[i] # defines the variable
-      indexx = 1      
+      indexx = i      
       sens_var[i] = -1 # replaces variable with -1            
     elif ((indexy == -1) and ((len(SENS[i])) > 1)):
       y = sens_var[i]
@@ -161,25 +163,27 @@ if tornado == 0:
   # run the plant code in a loop, updating the value of the variables (x and y) 
   # to be compared every time
   
-  #print("IndexX", indexx)
-  #print("IndexY", indexy)
+  print("IndexX", indexx)
+  print("IndexY", indexy)
   a = 1 # indexes
-  for i  in x: #THIS MIGHT BE WRONG (CHECK WITH A TEST RUN)
+  for i in x: #THIS MIGHT BE WRONG (CHECK WITH A TEST RUN)
     b = 1 # % indexes
-    for j in (y): #THIS MIGHT BE WRONG (CHECK WITH A TEST RUN)
+    for j in y: #THIS MIGHT BE WRONG (CHECK WITH A TEST RUN)
       inputs = (sens_var) # inputs = cell2mat(sens_var) # 
       #print("SENS_VAR")
       #print(sens_var)
       #print("")
       #print("INPUTS")
       #print(len(inputs))
-      #print(inputs)
-      #print(inputs[0])
-      #print(inputs[3])
+     # print(inputs)
+      print(inputs[0])
+      print(inputs[1])
+      print(sens_var[1])
+      print(inputs[3])
       #print("")
       inputs[indexx] = i # % update the proper input with the next value
       inputs[indexy]= j # % update the proper input with the next value
-
+      print(inputs[1])
       [cost, _, _, _, _, _, _, _, _, _, _, _, _, _, _] = cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, 
       Sell_SCM, Sell_Iron, Sell_Alumina, Sell_Aggregate, cleanH, cleanE, 
       inputs[0], inputs[1], inputs[2], inputs[3], inputs[4], inputs[5], 
@@ -193,9 +197,9 @@ if tornado == 0:
 #------------------------------
 # CHECK CONVERSION: GO OVER THIS CODE SNIPPET WITH CODY
       z[b, a] = cost #z(b, a) = cost # the cost H2 array
-      print("----COST CHECKER----")
-      print(cost)
-      print("--------------------")
+      #print("----COST CHECKER----")
+      #print(cost)
+      #print("--------------------")
       print("----Z-VALUES CHECKER----")
       print(z[b,a])
       print("---------------------")
@@ -248,8 +252,8 @@ if tornado == 0:
   constants[16], constants[17], constants[18], constants[19], constants[20],
   constants[21], constants[22], constants[23], constants[24], constants[25], 
   constants[26], constants[27], constants[28], constants[29], constants[30], constants[31], constants[32], constants[33], constants[34], constants[35])
-  print("---ZEEEEEEEEEEEEEEEEEEEE--")
-  print(z)
+  #print("---ZEEEEEEEEEEEEEEEEEEEE--")
+  #print(z)
   zlabel = 'Levelized Cost of Cement/T'
   # log the cost if necessary, unless there are negative values
   if log_plot == 1 and (np.sum(np.sum(abs(z))) <= np.sum(np.sum(z))):
@@ -259,6 +263,7 @@ if tornado == 0:
 #------------------------------------------------------------------------------------------------------------------------------------------
 #----------------------------------------------------------UNFINISHED CODE-----------------------------------------------------------------
 #------------------------------------------------------------------------------------------------------------------------------------------
+'''
 # CHECK ON Z Variable
   #------Figure 1------
   fig1 = plt.figure()
@@ -564,7 +569,7 @@ else:
     plt.xlabel("$USD/T OPC")
     plt.legend()
     plt.show(fig8)
-    '''
+    
   figure
 
     [high_sort, high_I] = sort(high, 'ascend')#

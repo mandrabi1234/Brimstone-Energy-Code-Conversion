@@ -10,6 +10,8 @@ def cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, Sell_SCM, Sell_Iron,
               SA_ratio, Eff, rev, PPT_F, PPT_Al, PPT_Agg, V, W, C_imp, Al_eff, Fe_eff, SCM_eff, OPC_eff, Agg_eff,
               CapEx_fac):
     #   ----------Plant Constraints----------
+    print("DPkW: ", DPkW)
+    print("CO2_Tax: ", CO2_Tax)
     TailShip = 1
     TPYcal = TPY * OPC_eff
     CO2int = ((not cleanH) * CO2int)
@@ -229,13 +231,13 @@ def cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, Sell_SCM, Sell_Iron,
     DH_C3S = (C3S - 3 * CaO - SiO2) * molT_C3S  # heat of formation C3S
     DH_C3A = (C3A - 3 * CaO - Al2O3) * molT_C3A  # heat of formation C3A
     DH_C4AF = (C4AF - 4 * CaO - Al2O3 - Fe2O3) * molT_C4AF  # heat of formation C4AF
-    print("DH_C4AF Check")
-    print("C4AF: ", C4AF)
-    print("CaO: ", CaO)
-    print("Al2O3: ", Al2O3)
-    print("Fe2O3: ", Fe2O3)
-    print("molt: ", molT_C4AF)
-    print("------------------")
+   #print("DH_C4AF Check")
+   #print("C4AF: ", C4AF)
+   #print("CaO: ", CaO)
+   #print("Al2O3: ", Al2O3)
+   #print("Fe2O3: ", Fe2O3)
+   #print("molt: ", molT_C4AF)
+   #print("------------------")
     # ---Heat from thermally decomposing limestone---
     DH_Lime = (CaO + CO2 - CaCO3) * mptCa_cem  # heat of formation CaO from CaCO3
 
@@ -267,7 +269,7 @@ def cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, Sell_SCM, Sell_Iron,
 
     # -------------------------------------------------
     DH_SB = 0
-    DH_Fe2O3Prod = 0
+    #DH_Fe2O3Prod = 0
     # -------------------------------------------------
 
     LH_Brimstone = 0
@@ -279,7 +281,7 @@ def cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, Sell_SCM, Sell_Iron,
     if DH_MgOProd < 0:
         LH_Brimstone = DH_MgOProd / 1000000 + LH_Brimstone
         DH_MgOProd = 0
-    print("CHECK CHECK")
+   #print("CHECK CHECK")
     c1 = 5655229.6296
     
     c2 = -442750.0
@@ -291,30 +293,46 @@ def cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, Sell_SCM, Sell_Iron,
     c8 = 134741.1943
     c9 = 1.6600611778992124e-19
     CHECK = (c1 + (c2 + c3 + c4 + c5) + c6 + c7) / 1000000 + (c8 + c9 + c7) /1000000
-    print("CHECK: ", CHECK)
-    print("c1: ", c1)
-    print("c2 ", c2)
-    print("c3 ", c3)
-    print(c4)
-    print(c5)
-    print(c6)
-    print(c7)
-    print(c8)
-    print(c9)
-    print("------------------")
+   #print("CHECK: ", CHECK)
+   #print("c1: ", c1)
+   #print("c2 ", c2)
+   #print("c3 ", c3)
+   #print(c4)
+   #print(c5)
+   #print(c6)
+   #print(c7)
+   #print(c8)
+   #print(c9)
+   #print("------------------")
     DH_Brimstone = ( DH_GypDecomp + ( DH_C2S +  DH_C3S +  DH_C4AF +  DH_C3A) +  DH_Al2O3_Prod_cem +  DH_Fe2O3Prod_cem) / 1000000 + ( KaolProd +  DH_MgOProd +  DH_Fe2O3Prod) / 1000000
+   #print("DH_GypeDecomp Check")
+   #print(( DH_GypDecomp + ( DH_C2S +  DH_C3S +  DH_C4AF +  DH_C3A) +  DH_Al2O3_Prod_cem +  DH_Fe2O3Prod_cem))
+   #print("---------------------")
+   #print("DH_C2S Check")
+   #print(( DH_C2S +  DH_C3S +  DH_C4AF +  DH_C3A))
+   #print("----------------------")
+   #print("Kaol_Prod Check")
+   #print("KaolProd: ", KaolProd)
+   #print("DH_MgOProd: ", DH_MgOProd)
+   #print("DH_Fe2O3Prod: ", DH_Fe2O3Prod)
+   #print(( KaolProd +  DH_MgOProd +  DH_Fe2O3Prod))
+   #print("-----------------------")
+   #print("")
+    #print()
+   #print("---------------------------")
     #DH_C4AF
-    print("DH_Brimstone Check")
-    print("DH_GypDecomp: ", DH_GypDecomp)
-    print("DH_C2S: ", DH_C2S)
-    print("DH_C3S: ", DH_C3S)
-    print("DH_C4AF: ", DH_C4AF)
-    print("DH_C3A: ", DH_C3A)
-    print("DH_Al203_Prod_cem: ", DH_Al2O3_Prod_cem)
-    print("DH_Fe2O3Prod_cem: ", DH_Fe2O3Prod_cem)
-    print("KaolProd: ", KaolProd)
-    print("DH_MgOProd: ", DH_MgOProd)
-    print("---------------------")
+   #print("DH_Brimstone Check")
+   #print("DH_GypDecomp: ", DH_GypDecomp)
+   #print("DH_C2S: ", DH_C2S)
+   #print("DH_C3S: ", DH_C3S)
+   #print("DH_C4AF: ", DH_C4AF)
+   #print("DH_C3A: ", DH_C3A)
+   #print("DH_Al203_Prod_cem: ", DH_Al2O3_Prod_cem)
+   #print("DH_Fe2O3Prod_cem: ", DH_Fe2O3Prod_cem)
+   #print("KaolProd: ", KaolProd)
+   #print("DH_MgOProd: ", DH_MgOProd)
+   #print("DH_Fe2O3Prod: ", DH_Fe2O3Prod)
+   #print("---------------------")
     # ----Sensible and Latent Heat requirements----
     # ---Define some constants---
     cp_rock = 0.002  # heat capacity of rock, GJ/T
@@ -343,14 +361,14 @@ def cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, Sell_SCM, Sell_Iron,
     SH_kaolin = ((cp_rock * (mptAl_Rock * T_rock - mptAl_cem) * (molMass_SiO2 * 2) * DT_Kaolin) * SH_eff)
 
     SHBrimstone = (SH_Cinker + SH_kaolin * Sell_SCM + SH_Al * Sell_Alumina + SH_CinkerPreheat + SH_Iron)
-    print("SHBrimstone Check")
-    print("SH_Cinker: ", SH_Cinker)
-    print("SH_kaolin: " , SH_kaolin)
-    print("Sell_SCM: ", Sell_SCM)
-    print("SH_Al: ", SH_Al)
-    print("Sell_Alumina: ", Sell_Alumina)
-    print("SH_CinkerPreheat: ", SH_CinkerPreheat)
-    print("SH_Iron: ", SH_Iron)
+   #print("SHBrimstone Check")
+   #print("SH_Cinker: ", SH_Cinker)
+   #print("SH_kaolin: " , SH_kaolin)
+   #print("Sell_SCM: ", Sell_SCM)
+   #print("SH_Al: ", SH_Al)
+   #print("Sell_Alumina: ", Sell_Alumina)
+   #print("SH_CinkerPreheat: ", SH_CinkerPreheat)
+   #print("SH_Iron: ", SH_Iron)
     #   fracation of free water left in precipitate (GJ/T OPC)
     FreeWater = 0.1  # some people say 10% is possible, we assume 40%
 
@@ -392,15 +410,15 @@ def cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, Sell_SCM, Sell_Iron,
     #   Add sensible, latent, and reaction heat together
 
     QBrimstone = DH_Brimstone + SHBrimstone + QWater - HPT * GJ_H2 * burnH2 * echem
-    print("QBrimstone Check")
-    print("DH_Brimstone: ", DH_Brimstone)
-    print("SHBrimstone: ", SHBrimstone)
-    print("QWater: ", QWater)
-    print("HPT: ", HPT)
-    print("GJ_H2: ", GJ_H2)
-    print("burnH2: ", burnH2)
-    print("echem: ", echem)
-    print("---------------------")
+   #print("QBrimstone Check")
+   #print("DH_Brimstone: ", DH_Brimstone)
+   #print("SHBrimstone: ", SHBrimstone)
+   #print("QWater: ", QWater)
+   #print("HPT: ", HPT)
+   #print("GJ_H2: ", GJ_H2)
+   #print("burnH2: ", burnH2)
+   #print("echem: ", echem)
+   #print("---------------------")
     if QBrimstone < 0:
         QBrimstone = 0
 
@@ -432,19 +450,19 @@ def cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, Sell_SCM, Sell_Iron,
     SH_cem_norm = (cp_rock * (DT_cal * mass_Dry + DT_clinker_dry) + (
             DH_C2S + DH_C3S + DH_C4AF + DH_C3A) / 1000000) * SH_eff
     QNormal = (DH_Lime) / 1000000 + SH_cem_norm + QClay_norm * CC * Dry
-    print("QNormal Check: ")
-    print("DH_Lime: ", DH_Lime)
-    print("SH_cem_norm: ", SH_cem_norm)
-    print("QClay_norm: ", QClay_norm)
-    print("CC: ", CC)
-    print("Dry: ", Dry)
-    print("-----------------------")
-    print("")
+   #print("QNormal Check: ")
+   #print("DH_Lime: ", DH_Lime)
+   #print("SH_cem_norm: ", SH_cem_norm)
+   #print("QClay_norm: ", QClay_norm)
+   #print("CC: ", CC)
+   #print("Dry: ", Dry)
+   #print("-----------------------")
+   #print("")
     en = QBrimstone / QNormal  # ratio of normal energy to Brimstone energy
-    print("en Check")
-    print("QBrimstone: ", QBrimstone)
-    print("QNormal: ", QNormal)
-    print("--------------------")
+   #print("en Check")
+   #print("QBrimstone: ", QBrimstone)
+   #print("QNormal: ", QNormal)
+   #print("--------------------")
     # ---Calcualte data to return---
     Alumina_HPT = 14
     Alumina_EPT = 150
@@ -526,20 +544,20 @@ def cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, Sell_SCM, Sell_Iron,
     if Dry == 1:
         CoalPrep = (5) * ex
         PetCokePrep = (5) * ex
-        print("Dry == 1 Check")
-        print("CoalPrep: ", CoalPrep)
-        print("PetCokePrep: ", PetCokePrep)
-        print("---------------------")
+       #print("Dry == 1 Check")
+       #print("CoalPrep: ", CoalPrep)
+       #print("PetCokePrep: ", PetCokePrep)
+       #print("---------------------")
     else:
         CoalPrep = (5) * ex * en
         PetCokePrep = (5) * ex * en
-        print("Dry != 1 Check")
-        print("CoalPrep: ", CoalPrep)
-        print("PetCokePrep: ", PetCokePrep)
-        print("ex: ", ex)
-        print("en: ", en)
+       #print("Dry != 1 Check")
+       #print("CoalPrep: ", CoalPrep)
+       #print("PetCokePrep: ", PetCokePrep)
+       #print("ex: ", ex)
+       #print("en: ", en)
 
-        print("---------------------")
+       #print("---------------------")
     CemMill = (10 + 10) * (ex) * (not retro)
     PackAndLoad = (5 + 5 + 3) * (ex * (not retro))
 
@@ -549,31 +567,31 @@ def cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, Sell_SCM, Sell_Iron,
         mass = T_rock
 
     EquipCapEx = RawCrush + Mill + Preheat + PreCal + Kiln + ClinkCool + CoalPrep + PetCokePrep + CemMill + PackAndLoad
-    print("EquipCapEx")
-    print("RawCrush: ", RawCrush)
-    print("Mill: ", Mill)
-    print("Preheat: ", Preheat)
-    print("PreCal: ", PreCal)
-    print("Kiln: ", Kiln)
-    print("ClinkCool: ", ClinkCool)
-    print("CoalPrep: ", CoalPrep)
-    print("PetCokePrep: ", PetCokePrep)
-    print("CemMill", CemMill)
-    print("PackAndLoad: ", PackAndLoad)
-    print("-----------------")
+   #print("EquipCapEx")
+   #print("RawCrush: ", RawCrush)
+   #print("Mill: ", Mill)
+   #print("Preheat: ", Preheat)
+   #print("PreCal: ", PreCal)
+   #print("Kiln: ", Kiln)
+   #print("ClinkCool: ", ClinkCool)
+   #print("CoalPrep: ", CoalPrep)
+   #print("PetCokePrep: ", PetCokePrep)
+   #print("CemMill", CemMill)
+   #print("PackAndLoad: ", PackAndLoad)
+   #print("-----------------")
     DesEng = (42) * ex
     Construc = (48) * ex
     Other = (8) * ex * (not retro)
     EPC = (17) * ex
     Installed = DesEng + Construc + Other + EPC + EquipCapEx
-    print("Installed Check")
-    print("Installed: ", Installed)
-    print("DesEng: ", DesEng)
-    print("Construc: ", Construc)
-    print("Other: ", Other)
-    print("EPC: ", EPC)
-    print("EquipCapEx: ", EquipCapEx)
-    print("--------------------")
+   #print("Installed Check")
+   #print("Installed: ", Installed)
+   #print("DesEng: ", DesEng)
+   #print("Construc: ", Construc)
+   #print("Other: ", Other)
+   #print("EPC: ", EPC)
+   #print("EquipCapEx: ", EquipCapEx)
+   #print("--------------------")
 
     TailCapEx = TPYcal * 8 / 1000000 * mass * TailShip
     MineCapEx = TPYcal * 0.5 / 1000000 * mass * TailShip
@@ -581,20 +599,20 @@ def cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, Sell_SCM, Sell_Iron,
     Fees = (5) * ex
     OwnCost = (12) * ex * (not retro)
 
-    print("CemCapEx Check")
+   #print("CemCapEx Check")
     CemCapEx = Installed + Contig + Fees + OwnCost + TailCapEx + MineCapEx
-    print("CemCapEx 1: ", CemCapEx)
-    print("Installed: ", Installed)
-    print("Contig: ", Contig)
-    print("Fees: ", Fees)
-    print("OwnCost: ", OwnCost)
-    print("TailCapEx: ", TailCapEx)
-    print("MineCapEx: ", MineCapEx)
-    print(" ")
+   #print("CemCapEx 1: ", CemCapEx)
+   #print("Installed: ", Installed)
+   #print("Contig: ", Contig)
+   #print("Fees: ", Fees)
+   #print("OwnCost: ", OwnCost)
+   #print("TailCapEx: ", TailCapEx)
+   #print("MineCapEx: ", MineCapEx)
+   #print(" ")
     CemCapEx = CemCapEx * 1000000 * TPYcal / 1000000  # linear cost relation with size
-    print("CemCapEx 2: ", CemCapEx)
-    print("TPYCal: ", TPYcal)
-    print("---------------")
+   #print("CemCapEx 2: ", CemCapEx)
+   #print("TPYCal: ", TPYcal)
+   #print("---------------")
     #---Water electrolysis, from H2A model---
     CF_e = 1
     WE_V = 2
@@ -619,15 +637,15 @@ def cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, Sell_SCM, Sell_Iron,
 
     CapEx = (CemCapEx + lyser_CapEx * echem * (not Dry) + CP_CapEx * (not Dry) + TankCost *
              (not Dry) + SMR_CapEx * SMR) * CapEx_fac
-    print("CapEx Check")
-    print("CemCapEx: ", CemCapEx)
-    print("lyser_CapEx: ", lyser_CapEx)
-    print("echem: ", echem)
-    print("CP_CapEx: ", CP_CapEx)
-    print("TankCost: ", TankCost)
-    print("SMR_CapEx: ", SMR_CapEx)
-    print("CapEx_fac: ", CapEx_fac)
-    print("-------------")
+   #print("CapEx Check")
+   #print("CemCapEx: ", CemCapEx)
+   #print("lyser_CapEx: ", lyser_CapEx)
+   #print("echem: ", echem)
+   #print("CP_CapEx: ", CP_CapEx)
+   #print("TankCost: ", TankCost)
+   #print("SMR_CapEx: ", SMR_CapEx)
+   #print("CapEx_fac: ", CapEx_fac)
+   #print("-------------")
     ePT = 100 * massRatio # electricity demand per tonne of cement for plant in kWhr / tonne clinker
 
     eH2 = H_output * 365 * 15 * (V / 0.56) / TPYcal *(not Dry) * echem # kWhr / T
@@ -706,6 +724,7 @@ def cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, Sell_SCM, Sell_Iron,
     OMpem = 0.03
 
     if Dry == 1 and CC == 1:
+        print("MINECOST == 15")
         mineCost = 15 # account for multiple mines in multiple locations
 
     SMR_OpEx = 1.15 * HPT * TPYcal # from H2A model
@@ -713,12 +732,13 @@ def cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, Sell_SCM, Sell_Iron,
     TailCost = 0.39 # $ / T
 
     if Dry == 1:
+        print("---DRY == 1 MINE_COST CHECK---")
         Tailings = TPYcal * 41 / 1000 * TailCost * TailShip
         Ship = mass_Dry * TPYcal * 1.5 * TailShip
         OpEx = OMcem * CemCapEx + mass_Dry * mineCost * TPYcal + (T_rock - 1) * TPYcal * mineCost * CC + QNormal * \
                TPYcal * heatCost + (ePT) * eCost * (TPYcal + (T_rock - 1) * CC) + CO2 * TPYcal * CO2_Tax + SMR_OpEx *\
                SMR + Tailings + Ship
-        print(" OpEx Check")
+        print("%%%%%%%%%%%%%OpEx Check")
         print("OMcem: ", OMcem)
         print("CemCapEx: ", CemCapEx)
         print("mass_Dry: ", mass_Dry)
@@ -735,12 +755,36 @@ def cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, Sell_SCM, Sell_Iron,
             Tailings, #8.
             Ship]) #9.
     else:
+        print("%%%DRY != 1 MINE_COST CHECK%%%")
         Tailings = TPYcal * 41 / 1000 * TailCost * T_rock * TailShip
         Ship = T_rock * TPYcal * 1.5 * TailShip
         OpEx = OMcem * CemCapEx + OMpem * (lyser_CapEx + CP_CapEx) + T_rock * mineCost * TPYcal + QBrimstone * TPYcal\
                * heatCost + water + (ePT + eH2 * echem) * eCost * TPYcal + CO2 * TPYcal * CO2_Tax + S_Cost * SAmount +\
                Tailings + Ship
-
+        print("----OpEx CHECK----")
+        print("OMcem: ", OMcem)
+        print("CemCapEx: ", CemCapEx)
+        print("OMpem: ", OMpem)
+        print("lyser_CapEx: ", lyser_CapEx)
+        print("CP_CapEx: ", CP_CapEx)
+        print("T_rock: ", T_rock)
+        print("mineCost: ", mineCost)
+        print("TPYcal: ", TPYcal)
+        print("QBrimstone: ", QBrimstone)
+        print("heatCost: ", heatCost)
+        print("water: ", water)
+        print("ePT: ", ePT)
+        print("eH2: ", eH2)
+        print("echem: ", echem)
+        print("eCost: ", eCost)
+        print("CO2: ", CO2)
+        print("CO2_Tax: ", CO2_Tax)
+        print("S_Cost: ", S_Cost)
+        print("SAmount: ", SAmount)
+        print("Tailings: ", Tailings)
+        print("Ship: ", Ship)
+        print("--------------------------")
+        print("")
         OpExMat = np.array([
             (OMcem* CemCapEx + OMpem * (lyser_CapEx + CP_CapEx)),
             (T_rock * mineCost * TPYcal), QBrimstone * TPYcal * heatCost,
@@ -764,6 +808,8 @@ def cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, Sell_SCM, Sell_Iron,
     OpEx_tot = OpEx_tot + OpEx * np.sum(1 / life_mat)
     print("OpEx_tot: ", OpEx_tot)
     print("OpEx: ", OpEx)
+    print("----------------------")
+    print()
     print("life_mat summation: ", np.sum(1/life_mat))
     print("---------------")
     OpExMat_tot = np.zeros(len(OpExMat), dtype=float) # CHECK CONVERSION: WHAT DATA TYPE DO YOU WANT THIS TO BE?
