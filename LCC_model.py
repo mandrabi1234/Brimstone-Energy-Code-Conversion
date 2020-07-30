@@ -270,7 +270,7 @@ if tornado == 0:
 #------------------------------------------------------------------------------------------------------------------------------------------
 #----------------------------------------------------------UNFINISHED CODE-----------------------------------------------------------------
 #------------------------------------------------------------------------------------------------------------------------------------------
-'''
+
 # CHECK ON Z Variable
   #------Figure 1------
   fig1 = plt.figure()
@@ -562,21 +562,43 @@ else:
   constants[33], constants[34], constants[35])#
 
 #--- FINAL FIGURE ---
+# Note: unable to fully test out this visualization, but it should work as is.
     fig8 = plt.figure(figsize = (6,5))
     rc('font', weight = 'bold')
-    high_sort = np.sort(high)
+    high_sorts = np.sort(high)
     high_I = np.argsort(high)
-   # for i in high_I:
-   #       low_sort = low[i]
-   #       names_sort = names[i]
 
-    low_sort = low[high_I]
+    low_sorts = low[high_I]
     names_sort = names[high_I]
+    ys = range(len(high_sorts))[::-1]
+
+    for y, low_sort, high_sort in zip(ys, low_sorts, high_sorts):
+          low_width = base-low_sort
+          high_width = low_sort + high_sort - base
+    plt.broken_barh([(low_sort, low_width), (base, high_width)], (y - 0.4, 0.8), 
+    facecolors = ['white', 'white'], edgecolors = ['black', 'black'], linewidth =1)
+
+    x = base + high_width/2
+    if x <= base + 50:
+        x = base + high_width + 50
+    plt.text(x, y, str(high_sort), va = 'center', ha = 'center')
+    plt.axvline(base, color = 'black')
+
+    axes = plt.gca()
+    axes.spines['left'].set_visible(False)
+    axes.spines['right'].set_visible(False)
+    axes.spines['bottom'].set_visible(False)
+    axes.xaxis.set_ticks_position('top')
+
+    plt.yticks(ys, names_sort)
+
+    plt.xlim(base-1000, base+1000)
+    plt.ylim(-1, len(names_sort))
 
     plt.xlabel("$USD/T OPC")
     plt.legend()
     plt.show(fig8)
-    
+'''  
   figure
 
     [high_sort, high_I] = sort(high, 'ascend')#
