@@ -284,7 +284,7 @@ if tornado == 0:
   #bars = np.add(bars1, bars2, bars3).tolist()
   r = [0, 1]
 
-  names = ['DryCapEx', 'BrimCapEx']
+  names = ['Dry Process CapEx', 'Brimstone CapEx']
 
   barwidth = 0.5
 
