@@ -165,9 +165,13 @@ if tornado == 0:
   
   print("IndexX", indexx)
   print("IndexY", indexy)
-  a = 1 # indexes
+  print("--X--: ", x)
+  print("--Y--", y)
+  a = 0 # indexes
   for i in x: #THIS MIGHT BE WRONG (CHECK WITH A TEST RUN)
-    b = 1 # % indexes
+    print("i: ", i)
+    b = 0 # % indexes
+    print("b: ", b)
     for j in y: #THIS MIGHT BE WRONG (CHECK WITH A TEST RUN)
       inputs = (sens_var) # inputs = cell2mat(sens_var) # 
       #print("SENS_VAR")
@@ -176,14 +180,15 @@ if tornado == 0:
       #print("INPUTS")
       #print(len(inputs))
      # print(inputs)
-      print(inputs[0])
-      print(inputs[1])
-      print(sens_var[1])
-      print(inputs[3])
+    #  print(inputs[0])
+    #  print(inputs[1])
+    #  print(sens_var[1])
+    #  print(inputs[3])
       #print("")
       inputs[indexx] = i # % update the proper input with the next value
       inputs[indexy]= j # % update the proper input with the next value
-      print(inputs[1])
+      print("INPUTS1: ", inputs[indexx])
+      print("INPUTS2: ", inputs[indexy])
       [cost, _, _, _, _, _, _, _, _, _, _, _, _, _, _] = cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, 
       Sell_SCM, Sell_Iron, Sell_Alumina, Sell_Aggregate, cleanH, cleanE, 
       inputs[0], inputs[1], inputs[2], inputs[3], inputs[4], inputs[5], 
@@ -201,6 +206,8 @@ if tornado == 0:
       #print(cost)
       #print("--------------------")
       print("----Z-VALUES CHECKER----")
+      print("b: ", b)
+      print("a: ", a)
       print(z[b,a])
       print("---------------------")
       print(z)
@@ -210,10 +217,10 @@ if tornado == 0:
       # z_en(b, a) = Energy_needed; #the energy use array
       # zz(b, a,:) = LCH_mat# % grid of costs array
 #------------------------------
-    b = b + 1 
+      b = b + 1 
       #  zz(isnan(zz)) = 0#
         
-  a = a + 1 
+    a = a + 1 
   
 # find Base Case
 # update the proper input with the next value
