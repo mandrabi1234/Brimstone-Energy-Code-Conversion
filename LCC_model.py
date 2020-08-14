@@ -1,7 +1,7 @@
 import math
 import pandas as pd
 import matplotlib.pyplot as plt
-from matplotlib import rc
+#from matplotlib import rc
 import numpy as np
 from cem_plant import cem_plant
 from define_cem_sens_anal import Def_anal
@@ -46,8 +46,6 @@ eCost_switch = 1 # price to sell electricity
 kWhr_kg_switch = 0 # vary the cost of storing energy
 r_switch = 0 # vary the capacity factor of the plant
 
-#Thank you very much for all that you have done
-
 CaO_Frac_Rock_switch = 0 # fraction of CaO in the source rock
 Al2O3_Frac_Rock_switch = 0 # fraction of Al2O3 in the source rock
 SiO2_Frac_Rock_switch = 0 # fraction of SiO2 in the source rock
@@ -79,7 +77,6 @@ Agg_eff_switch = 0
 CapEx_fac_switch = 0
 
 #------------------------------------------------------------
-#CHECK CONVERSION: GO OVER THIS CODE SNIPPET WITH CODY
 log_plot = 0 #  if 1 the price of H2 is base 10 logged
 switches = [DPkW_switch, CO2_Tax_switch, CH_switch, mineCost_switch,
  heatCost_switch, maxSCM_switch, eCost_switch, kWhr_kg_switch, 
@@ -112,7 +109,6 @@ sens_var, constants, SENS = Def_anal(switches, Skarn, Ave_basalt, tornado)
 # selected were not variables, and therefore can be ignored
 
 
-print(len(sens_var)-2)
 if tornado == 0:
   for i in range(len(sens_var) - 2):
     if ((indexx == -1) and (indexy == -1) and ((len(SENS[i])) > 1)):
@@ -143,23 +139,17 @@ if tornado == 0:
   # run the plant code in a loop, updating the value of the variables (x and y) 
   # to be compared every time
   
-  print("IndexX", indexx)
-  print("IndexY", indexy)
-  print("--X--: ", x)
-  print("--Y--", y)
+  
   a = 0 # indexes
-  for i in x: #THIS MIGHT BE WRONG (CHECK WITH A TEST RUN)
-    print("i: ", i)
-    b = 0 # % indexes
-    print("b: ", b)
-    for j in y: #THIS MIGHT BE WRONG (CHECK WITH A TEST RUN)
+  for i in x: 
+    b = 0 #  indexes
+
+    for j in y: 
       inputs = (sens_var) # inputs = cell2mat(sens_var) # 
 
-      inputs[indexx] = i # % update the proper input with the next value
-      inputs[indexy]= j # % update the proper input with the next value
+      inputs[indexx] = i #  update the proper input with the next value
+      inputs[indexy]= j #  update the proper input with the next value
 
-      print("INPUTS1: ", inputs[indexx])
-      print("INPUTS2: ", inputs[indexy])
       [cost, _, _, _, _, _, _, _, _, _, _, _, _, _, _] = cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, 
       Sell_SCM, Sell_Iron, Sell_Alumina, Sell_Aggregate, cleanH, cleanE, 
       inputs[0], inputs[1], inputs[2], inputs[3], inputs[4], inputs[5], 
@@ -171,14 +161,7 @@ if tornado == 0:
       inputs[30], inputs[31], inputs[32], inputs[33], inputs[34], 
       inputs[35])
 #------------------------------
-# CHECK CONVERSION: GO OVER THIS CODE SNIPPET WITH CODY
       z[b, a] = cost #z(b, a) = cost # the cost H2 array
-      print("----Z-VALUES CHECKER----")
-      print("b: ", b)
-      print("a: ", a)
-      print(z[b,a])
-      print("---------------------")
-      print(z)
       
       np.nan_to_num(z) # z(isnan(z)) = 0 (replace all NaN values with 0)
       # z_CO2(b, a) = CO2 # the CO2 production array
@@ -237,73 +220,47 @@ if tornado == 0:
 #------------------------------------------------------------------------------------------------------------------------------------------
 
   #------Figure 1------
-  fig1 = plt.figure()
-  #left, bottom, width, height = 0.1, 0.1, 0.8, 0.8
-  #ax = fig1.add_axes([left, bottom, width, height])
-
+  
   cp = plt.contourf(x, y, z)
   plt.colorbar(cp)
 
-  
-  #ax.set_title('Contour Plot')
   plt.xlabel('Mining Cost (USD/T)')
   plt.ylabel('Electricity Cost ($/kWhr)')
-  plt.show(fig1)
+  plt.show()
 
   #------Figure 2------
-  fig2 = plt.figure(figsize = (6,5))
-  left, bottom, width, height = 0.1, 0.1, 0.8, 0.8
-  ax = fig2.add_axes([left, bottom, width, height])
 
   data = {"Dry USD/T OPC":Dry_base, "Break-Even Co-Product Value":((CapExPT) + OpExPT - Dry_base), 
   "USD/T OPC":cost, "Value SCM":SCM_value, "Value Iron":Iron, "Value Aluminum":Al, "Value Aggregate":Agg, 
   "Value H_2":H2_value, "CapEx per T":(CapExPT), "OpEx pet T":OpExPT} 
-
+  
   key = list(data.keys())
   Y = list(data.values())
+  df = pd.DataFrame(data = Y, index = key)
 
-  bar = plt.bar(key, Y, width = 0.5)
-  plt.xticks(rotation = 45)
-  ylabel = ("$/T OPC")
-
-  for index, value in enumerate(Y):
-      plt.text(index -0.5, value, str(value))
-  plt.show(fig2)
+  ax = df.plot.bar(rot = 15)
+  ax.set_ylabel("$/T OPC")
 
   #------Figure 3------
-  fig3 = plt.figure()
-  rc('font', weight = 'bold')
+  
   DryCapEx = np.array([DryCapExMat[0], 0, 0, 0])
   BrimCapEx = np.array([CapExMat[0] *(not Dry), CapExMat[1] * echem *(not Dry), CapExMat[2] *(not Dry), CapExMat[3] *(not Dry)])
-
-
+  
   bars1 = [DryCapEx[0], BrimCapEx[0]]
   bars2 = [DryCapEx[1], BrimCapEx[1]]
   bars3 = [DryCapEx[2], BrimCapEx[2]]
   bars4 = [DryCapEx[3], BrimCapEx[3]]
-  #bars = np.add(bars1, bars2, bars3).tolist()
-  r = [0, 1]
+  
+  data = {"Cement + SCM Plant": bars1, "Hydrogen":bars2, "Acid Regeneration":bars3, "Acid Reactor":bars4}
 
-  names = ['Dry Process CapEx', 'Brimstone CapEx']
+  index = {"Dry Process CapEx", "Brimstone Process CapEx"}
 
-  barwidth = 0.5
+  df = pd.DataFrame(data = data, index = index)
 
-  plt.bar(r, bars1, label = 'Cement + SCM Plant', color = '#b5ffb9', edgecolor = 'white', width = barwidth)
-  plt.bar(r, bars2, label = 'Hyrogen', bottom = bars1, color = '#557f2d', edgecolor = 'white', width = barwidth)
-  plt.bar(r, bars3, label = 'Acid Regeneration', bottom = bars2, color = '#f9bc86', edgecolor = 'white', width = barwidth)
-  plt.bar(r, bars4, label = 'Acid Reactor', bottom = bars3, color = '#a3acff', edgecolor = 'white', width = barwidth)
-
-
-  plt.xticks(r, names, fontweight = 'bold')
-  plt.xticks(rotation = 45)
-  plt.ylabel("CapEx, 1MT OPC Plant (USD)")
-  plt.legend()
-  plt.show(fig3)
+  df.plot.bar(stacked = True, rot = 15, title = "CHECKER", )
 
   #------Figure 4------
-  fig4 = plt.figure(figsize = (6,5))
-  rc('font', weight = 'bold')
-
+  
   Q = DryQDry
   out = QBrim*(not Dry)
 
@@ -311,59 +268,36 @@ if tornado == 0:
   bars2 = [Q[1], QDry[1], out[1], QH2[1]]
   bars3 = [Q[2], QDry[2], out[2], QH2[2]]
 
-  bars = np.add(bars1, bars2).tolist()
-  r = [0, 1, 2, 3]
+  data = {"Net Reaction Heat":bars1, "Net Sensible Heat":bars2, "Net Latent Heat": bars3}
+  index = ["Dry Process Heat", "Equivalent OPC + SCM + Fe_2O_3 + Al_2_O_3 + H_2 Heat", "Brimstone Process Heat", "H_2 Combustion Heat"]
 
-  names = ['Dry Process Heat', 'Equivalent OPC + SCM + Fe_2O_3 + Al_2_O_3 + H_2 Heat', 'Brimstone Process Heat', 'H_2 Combustion Heat']
-  barWidth = 0.5
+  df = pd.DataFrame(data = data, index = index)
 
-  plt.bar(r, bars1, color = '#b5ffb9', edgecolor = 'white', width = barWidth, label = 'Net Reaction Heat')
-  plt.bar(r, bars2, bottom = bars1, color = '#f9bc86', edgecolor = 'white', width = barWidth, label = 'Net Sensible Heat')
-  plt.bar(r, bars3, bottom = bars, color = '#a3acff', edgecolor = 'white', width = barWidth, label = 'Net Latent Heat')
-
-  plt.xticks(r, names, fontweight = 'bold', rotation = 45)
-  plt.ylabel("Heat Energy (GJ/T OPC)")
-  plt.legend()
-  plt.show(fig4)
+  df.plot.bar(stacked = True, rot = 15)
 
   #------Figure 5------
-  fig5 = plt.figure(figsize = (6,5))
-  rc('font', weight = 'bold')
-
+  
   DryCapEx = np.array([DryGHG[0], DryGHG[3], DryGHG[1]])
   BrimCapEx = np.array([0, GHG[4]*(not cleanH), GHG[2]*(not cleanE)])
   ECapEx = np.array([GHG[0], (GHG[3]+GHG_Div[5]+GHG_Div[7])*(not cleanH), GHG[1]*(not cleanE)])
-
+  
   bars1 = [DryCapEx[0], BrimCapEx[0], ECapEx[0]]
   bars2 = [DryCapEx[1], BrimCapEx[1], ECapEx[1]]
   bars3 = [DryCapEx[2], BrimCapEx[2], ECapEx[2]]
 
-  bars = np.add(bars1, bars2).tolist()
+  data = {"Process":bars1, "Heat":bars2, "Electricity":bars3}
+  index = ["Dry Process", "Brimstone Total", "Equivalent OPC + SCM + Fe_2O_3 + Al_2_O_3 + H_2"]
+  
+  df = pd.DataFrame(data = data, index = index)
 
-  r = [0, 1, 2]
-
-  names = ['Dry Process', 'Brimstone Total', 'Equivalent OPC + SCM + Fe_2O_3 + Al_2_O_3 + H_2']
-  barWidth = 0.5
-
-  plt.bar(r, bars1, color = '#b5ffb9', edgecolor = 'white', width = barWidth, label = 'Process')
-  plt.bar(r, bars2, bottom = bars1, color = '#f9bc86', edgecolor = 'white', width = barWidth, label = 'Heat')
-  plt.bar(r, bars3, bottom = bars, color = '#a3acff', edgecolor = 'white', width = barWidth, label = 'Electricity')
-
-  plt.xticks(r, names, fontweight = 'bold', rotation = 45)
-  plt.ylabel("CO_2 Intensity (T CO_2/TOPC)")
-  plt.legend()
-  plt.show(fig5)
-
+  df.plot.bar(stacked = True, rot = 15)
+  
   #------Figure 6------
-  # NOTE: Discuss graph output and labeling with Cody via Google Meets
-  fig6 = plt.figure()
-  rc('font', weight = 'bold')
 
   DryCapEx = DryOpExMat
   BrimCapEx = np.array([OpExMat[0] * (not Dry), OpExMat[1] * (not Dry),OpExMat[2] * (not Dry), OpExMat[3] * (not Dry), OpExMat[4] * (not Dry), OpExMat[5] * (not Dry), OpExMat[6] * (not Dry), OpExMat[7] * (not Dry), OpExMat[8] * (not Dry)])
-
-  bars1 = [DryCapEx[0], BrimCapEx[0]]
   
+  bars1 = [DryCapEx[0], BrimCapEx[0]]
   bars2 = [DryCapEx[1], BrimCapEx[1]]
   bars3 = [DryCapEx[2], BrimCapEx[2]]
   bars4 = [DryCapEx[3], BrimCapEx[3]]
@@ -372,9 +306,8 @@ if tornado == 0:
   bars7 = [DryCapEx[6], BrimCapEx[6]]
   bars8 = [DryCapEx[7], BrimCapEx[7]]
   bars9 = [DryCapEx[8], BrimCapEx[8]]
-  #bars = np.add(bars1, bars2, bars3, bars4, bars5, bars6, bars7, bars8).tolist()
-  #print("bars: ", bars)
 
+  # Printing stacked values for explicit reference
   print("bars1: ", bars1)
   print("bars2: ", bars2)
   print("bars3: ", bars3)
@@ -384,30 +317,16 @@ if tornado == 0:
   print("bars7: ", bars7)
   print("bars8: ", bars8)
   print("bars9: ", bars9)
+    
+  data = {"O&M": bars1, "Mining": bars2, "Heat": bars3, "Electricity": bars4, "CO_2 Tax": bars5, "Water": bars6, "Sulfur": bars7, "N/A": bars8, "N/A": bars9}
+  index = ['Dry Process OpEX', 'Brimstone OpEx']
+  df = pd.DataFrame(data = data, index = index)
 
-  r = [0, 1]
-  names = ['Dry Process OpEX', 'Brimstone OpEx']
-  barWidth = 0.65
+  df.plot.bar(stacked = True, rot = 15)
 
-  plt.bar(r, bars1, color='red', label = 'O&M', edgecolor='white', width=barWidth)
-  plt.bar(r, bars2, bottom = bars1, color='green', label = 'Mining', edgecolor='white', width=barWidth)
-  plt.bar(r, bars3, bottom = bars2, color='blue', label = 'Heat', edgecolor='white', width=barWidth)
-  plt.bar(r, bars4, bottom = bars3, color='yellow', label = 'Electricity', edgecolor='white', width=barWidth)
-  plt.bar(r, bars5, bottom = bars4, color='orange', label = 'CO_2 Tax', edgecolor='white', width=barWidth)
-  plt.bar(r, bars6, bottom = bars5, color='purple', label = 'Water', edgecolor='white', width=barWidth)
-  plt.bar(r, bars7, bottom = bars6, color='teal', label = 'Sulfur', edgecolor='white', width=barWidth )
-  plt.bar(r, bars8, bottom = bars7, color='pink', edgecolor='white', width=barWidth)
-  plt.bar(r, bars9, bottom = bars8, color='grey', edgecolor='white', width=barWidth)
-
-  plt.xticks(r, names, fontweight = 'bold', rotation = 45)
-  plt.ylabel = ("OpEx/T OPC, 1MTPY OPC Plant (USD)")
-  plt.legend()
-  plt.show(fig6)
 
   #------Figure 7------
-  fig7 = plt.figure(figsize = (6,5))
-  rc('font', weight = 'bold')
-
+  # NOTE: for some reason this chart is printed twice. Not sure why, but it doesn't impact the script's run time or the visualization's accuracy
   data = {"Conv. Process Cement":np.sum(DryGHG), "Brimstone Cement":GHG_Div[0], 
   "Conv. Alumina":GHG_Div[5], "Brimstone Alimina":GHG_Div[1], "Conv. Iron Oxide":GHG_Div[6], "Brimstone Iron Oxide":GHG_Div[2], 
   "Conv. SCM":(np.sum(np.array([GHG[0], GHG[4] * (not cleanH), GHG[1] * (not cleanE)])) - np.sum(DryGHG)) * Sell_SCM, 
@@ -415,17 +334,13 @@ if tornado == 0:
 
   key = list(data.keys())
   Y = list(data.values())
+  df = pd.DataFrame(data = Y, index = key)
 
-  bar = plt.bar(key, Y, width = 0.5)
-  plt.xticks(rotation = 45)
-  ylabel = ("TCO_2/T OPC produced")
-
-  for index, value in enumerate(Y):
-      plt.text(index -0.5, value, str(value))
-
-  plt.show(fig7)
-
-
+  ax = df.plot.bar(rot = 15)
+  ax.set_ylabel("TCO_2/T OPC produced")
+  df.plot.bar( rot = 15)
+  plt.show()
+  
 #--Continue If-Else Statement (if tornado == 0)--
 else:
     t_data = np.arange(1, len(constants)+1, 1)
@@ -485,14 +400,14 @@ else:
     vars = np.hstack((var1, var2, var3, var4))
 
     
-    a = 1#
-    high = np.zeros(vars.shape)#
-    low = np.zeros(vars.shape)#
+    a = 1
+    high = np.zeros(vars.shape)
+    low = np.zeros(vars.shape)
     for i in vars: 
-      n = t_data[i]#
-      high[a] = np.maximum(n)#
-      low[a] = np.minimum(n)#
-      a = a + 1#
+      n = t_data[i]
+      high[a] = np.maximum(n)
+      low[a] = np.minimum(n)
+      a = a + 1
     [base, _, _, _, _, _, _, _, _, _, _, _, _, _, _] = cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, 
   Sell_SCM, Sell_Iron, Sell_Alumina, Sell_Aggregate, cleanH, 
   cleanE, constants[0], constants[1], constants[2], constants[3], 

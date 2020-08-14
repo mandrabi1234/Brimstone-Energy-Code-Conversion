@@ -54,11 +54,9 @@ def cem_plant(SMR, CC, chemical, Dry, echem, retro, burnH2, Sell_SCM, Sell_Iron,
     molMass_AlCl26H2O = 240 / 1000000  # tonnes/mol AlCl3.6H2O
 
     #   ----Calculate elemental oxide fraction in the cement----
+
     #   --percent CaO--
-    
     CaO_Frac_Cem = molMass_Ca * 3 / molMass_C3S * mFrac_C3S + molMass_Ca * 2 / molMass_C2S * mFrac_C2S + molMass_Ca * 3 / molMass_C3A * mFrac_C3A + molMass_Ca * 4 / molMass_C4AF * mFrac_C4AF  
-    
-    
 
     # --percent SiO2--
     SiO2_Frac_Cem = molMass_SiO2 / molMass_C3S * mFrac_C3S + molMass_SiO2 / molMass_C2S * mFrac_C2S
