@@ -1,12 +1,13 @@
 import math
 import pandas as pd
 import matplotlib.pyplot as plt
-#from matplotlib import rc
 import numpy as np
 from cem_plant import cem_plant
 from define_cem_sens_anal import Def_anal
 from replace import replace
 from volt import volt
+
+# NOTE: MUST INSTALL PANDAS 
 
 # check for OpEx
 # do a tornado plot
