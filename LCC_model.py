@@ -257,7 +257,7 @@ if tornado == 0:
 
   df = pd.DataFrame(data = data, index = index)
 
-  df.plot.bar(stacked = True, rot = 15, title = "CHECKER", )
+  df.plot.bar(stacked = True, rot = 15)
 
   #------Figure 4------
   
